@@ -3,6 +3,9 @@ const routerCarts = Router()
 const { CartManager }  = require("../managerDaos/cartManager")
 const carrito = new CartManager()
 
+const ProductManager = require("../managerDaos/ProductManager");
+const producto = new ProductManager("./data.json")
+
 
 //GET
 routerCarts.get('/', async(req, res) => {
@@ -42,7 +45,7 @@ routerCarts.post('/:cid/product/:pid', async(req, res) => {
         let prodExiste = arrayProductos.find(pd => pd.id === prod)
         if (!prodExiste) return res.send({error: 'No se encuentra el producto'})
         let producto ={}
-        producto.id = prod
+        producto.id = prod  
         producto.quantity = 1
         cart.products.push(producto)
         await carrito.updateCart(id, cart)

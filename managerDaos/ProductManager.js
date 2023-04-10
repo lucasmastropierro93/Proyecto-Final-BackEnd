@@ -8,7 +8,15 @@ class ProductManager {
         this.path = filePath
         this.products = productos
     }
-
+    writeFile = async data => {
+        try {
+            await fs.promises.writeFile(
+                this.path, JSON.stringify(data, null, 2)
+                )
+            }catch(err) {
+            console.log(err);
+            }
+        }
     getProducts = async () => {
         try {
             const data = await fs.promises.readFile(this.path, "utf-8")
@@ -81,10 +89,10 @@ class ProductManager {
 
     deleteProduct = async (id) => {
         try {
-            const eliminar = this.products.find(prod => prod.id == id)
-            if (!eliminar) return "No se encontro el producto a eliminar"
-            console.log(eliminar);
-            await fs.promises.writeFile(this.path, JSON.stringify(eliminar, "utf-8", "\t"))
+            let products = await this.getProducts()
+            const obj = products.filter(obj => obj.id !== id)
+            await this.writeFile(obj);
+            
             return "Producto eliminado correctamente"
         } catch (error) {
             console.log("error 4");
