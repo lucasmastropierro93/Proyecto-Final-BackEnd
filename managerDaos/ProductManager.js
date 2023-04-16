@@ -99,7 +99,16 @@ class ProductManager {
         }
     }
 
-
+deleteById = async id => {
+        try {
+            let products = await this.getProducts()
+            const obj = products.filter(obj => obj.id !== id)
+            await this.writeFile(obj);
+            return console.log('removed product');
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
 
 }

@@ -6,16 +6,9 @@
     "price": 200,
     "thumbnail": "sin imagen",
     "code": 1,
-    "stock": 25
-  },
-  {
-    "id": 2,
-    "title": "Iphone 14",
-    "description": "Este iphone cuenta con pantalla 6.1pulgadas y una memoria de 256gb",
-    "price": 200,
-    "thumbnail": "sin imagen",
-    "code": 2,
-    "stock": 25
+    "stock": 25,
+    "status": true
+
   },
   {
     "id": 3,
@@ -24,6 +17,7 @@
     "price": 200,
     "thumbnail": "sin imagen",
     "code": 3,
-    "stock": 25
+    "stock": 25,
+    "status": true
   }
 ]
