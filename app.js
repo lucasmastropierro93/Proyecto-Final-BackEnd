@@ -18,6 +18,7 @@ app.set("view engine", "handlebars");
 
 //SOCKET-------------------------------------------------------------------------------------
 const { Server } = require("socket.io");
+const { socketProduct } = require("./utils/socketProduct");
 
 const httpServer = app.listen(8080, () => {
   console.log("Running on port 8080");
@@ -41,16 +42,18 @@ app.use("/api/carts", cartRouter);
 app.post("/single", uploader.single("myfile"), (req, res) => {
   res.status(200).send({ status: "success" });
 });
-io.on("connection", async socket => {
-  console.log("nuevo cliente conectado");
-  const products = await productsList.getProducts();
 
-  socket.emit("productos", products);
-});
+
+socketProduct(io)
+
+
+
 app.use((err, req, res, next) => {
   console.log(err);
   res.status(500).send("Algo salio mal    ");
 });
+
+
 
 app.get("/chat", (req, res) => {
   res.render("chat", {});

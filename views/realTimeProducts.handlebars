@@ -1,8 +1,28 @@
 <div>
     <h1>Listado de Productos en Tiempo Real</h1>
-    <h2>ACTUALIZACION CON METODOS POST, PUT y DELETE</h2>
-            <ul id="listaProductos">
+    
+            <ul id="listProducts">
             </ul>
 </div>
 <script src="/socket.io/socket.io.js"></script>
-<script src="/static/js/realTimeProducts.js"></script>
+<script>
+    const socket =io()
+    socket.on("productos", data =>{
+        console.log(data)
+
+
+    let div = document.getElementById('listProducts')
+    let productos = ''
+    data.forEach((product) => {
+        productos += `<div>titulo: ${product.title} descripcion:${product.description} precio: ${product.price} stock:${product.stock} code:${product.code}</div>`
+    })
+    div.innerHTML = productos   
+
+
+
+
+
+
+        
+    })
+</script>
