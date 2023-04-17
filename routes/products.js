@@ -29,10 +29,7 @@ router.post("/", async (req, res) => {
     let productSend = req.body;
     const addedProduct = await productManager.addProducts(productSend);
 
-    !addedProduct
-      ? res.status(400).send({ error: "Could not add product" })
-      : res.status(201).send({ status: "success", payload: productSend });
-    
+    res.send({status: "Sucess", product: addedProduct})
   } catch (error) {
     return { status: "error", error };
   }
