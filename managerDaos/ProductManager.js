@@ -65,22 +65,28 @@ class ProductManager {
     }
   };
 
-  updateProduct = async (id, ProductoActualizar) => {
+  updateProduct = async (pid, data) => {
     try {
-      let product = this.products.find((prod) => prod.id === id);
-      if (!product) return "not found";
-      product.title = ProductoActualizar.title;
-      product.description = ProductoActualizar.description;
-      product.price = ProductoActualizar.price;
-      product.thumbnail = ProductoActualizar.thumbnail;
-      product.code = ProductoActualizar.code;
-      product.stock = ProductoActualizar.stock;
+        const getFileProducts = await fs.promises.readFile(this.path, 'utf-8')
+        const parseProducts = JSON.parse(getFileProducts);
+        // console.log(parseProducts);
+        if (isNaN(Number(pid))) return { status: "error", message: 'No es un id válido' };
 
-      await fs.promises.writeFile(
-        this.path,
-        JSON.stringify(this.products, "utf-8", "\t")
-      );
-      return "Se actualizo un producto";
+        const findId = parseProducts.findIndex(product => product.id == pid)
+        if (findId === -1) return { status: "error", message: 'No se encontró el id' };
+
+        this.products = parseProducts.map(element => {
+                if(element.id == pid){
+                    element = Object.assign(element, data);
+                   return element
+                }
+                return element
+            })
+
+            const toJSON = JSON.stringify(this.products, null, 2);
+            await fs.promises.writeFile(this.path, toJSON)
+       
+  
     } catch (error) {
       console.log("error3");
     }
