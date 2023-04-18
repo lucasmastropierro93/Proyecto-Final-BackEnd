@@ -1,3 +1,4 @@
+// IMPORTSSSS
 const productRouter = require("./routes/products");
 const cartRouter = require("./routes/carts");
 const cookieParser = require("cookie-parser");
@@ -8,7 +9,7 @@ const app = express();
 const ProductManager = require("./managerDaos/ProductManager");
 
 const productsList = new ProductManager("./data.json");
-// hbs __________________________________________
+// ----------------------------------------HANDLEBARS-------------------------
 const handlebars = require("express-handlebars");
 
 app.engine("handlebars", handlebars.engine());
@@ -16,7 +17,7 @@ app.set("views", __dirname + "/views");
 app.set("view engine", "handlebars");
 // hbs __________________________________________
 
-//SOCKET-------------------------------------------------------------------------------------
+//----------------------------SOCKET-------------------------------------------------------------------------------------
 const { Server } = require("socket.io");
 const { socketProduct } = require("./utils/socketProduct");
 
@@ -26,7 +27,9 @@ const httpServer = app.listen(8080, () => {
 
 const io = new Server(httpServer);
 
-//-------------------------------------------------------------------------------------
+
+socketProduct(io)
+//------------------------------------- APP USE ----------------
 app.use("/", viewsRouter);
 
 app.use(express.json());
@@ -38,25 +41,38 @@ app.use(cookieParser());
 
 app.use("/api/productos", productRouter);
 app.use("/api/carts", cartRouter);
-//multer
+//--------------------------MULTER------------------------------
 app.post("/single", uploader.single("myfile"), (req, res) => {
   res.status(200).send({ status: "success" });
 });
 
 
-socketProduct(io)
 
 
+//---------------------------------------------------------------------------
 
 app.use((err, req, res, next) => {
   console.log(err);
-  res.status(500).send("Algo salio mal    ");
+  res.status(500).send("Algo salio mal");
 });
 
 
+//-----------------------CHAT    ------------------------------------------------
 
-app.get("/chat", (req, res) => {
-  res.render("chat", {});
-});
+let  messages = []
+
+io.on('connection', socket => {
+  console.log('Nuevo cliente conectado al chat  ')
+  socket.on('message', data => {
+       //console.log(data)
+      messages.push(data)
+      io.emit('messageLogs', messages)
+  })
+  socket.on('authenticated', data => {
+    socket.broadcast.emit('newUserConnected', data)
+})
+
+})
 
 
+  
