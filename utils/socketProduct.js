@@ -1,4 +1,4 @@
-const ProductManager = require("../managerDaos/ProductManager")
+const ProductManager = require("../Dao/FileSystem/ProductManager")
 
 const productsList = new ProductManager("./data.json")
 

@@ -1,18 +1,38 @@
 const { Router } = require("express");
-const ProductManager = require("../managerDaos/ProductManager");
+
+const productManager = require("../Dao/Mongo/product.mongo");
+const { productModel } = require("../Dao/Mongo/models/product.model");
 const router = Router();
 
-const productManager = new ProductManager("./data.json");
+//const productManager = new ProductManager("./data.json");
 router.get("/", async (req, res) => {
   try {
+  
+  
+        const {page=1} = req.query
+        let products = await productModel.paginate({}, {limit: 3, page: page, lean: true})
+        const {docs, hasPrevPage, hasNextPage, prevPage, nextPage, totalPages} = products
+
+     
+        res.render('products',{
+            status: 'success',
+            products: docs,
+            hasPrevPage,
+            hasNextPage,
+            prevPage,
+            nextPage
+        })
+
+    /*
     const products = await productManager.getProducts();
     const limit = req.query.limit;
-  
+  // http://localhost:8080/api/productos/?limit=4 ESTO ES PARA PONER LIMITE
 
 
     limit
       ? res.send({ status: "succes", products: products.slice(0, limit) })
       : res.send({ status: "success", products: products });
+     */
   } catch (error) {
     console.log(error);
   }
