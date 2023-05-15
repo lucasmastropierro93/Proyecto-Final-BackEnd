@@ -22,7 +22,7 @@ module.exports = {
       //const cart = await cartModel.findOne({_id: '645948bfd732f85887a2b9dd'})
 
       //console.log(JSON.stringify(cart,null, "\t"));
-
+/*
       const result = await productModel.aggregate([
         {
           $limit: 10,
@@ -32,6 +32,7 @@ module.exports = {
         }
       ]);
       console.log(result);
+      */
     } catch (error) {
       console.log(error);
     }

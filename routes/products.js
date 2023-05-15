@@ -8,9 +8,9 @@ const router = Router();
 router.get("/", async (req, res) => {
   try {
   
-  
+        const {limit = 3} = req.query
         const {page=1} = req.query
-        let products = await productModel.paginate({}, {limit: 3, page: page, lean: true})
+        let products = await productModel.paginate({}, {limit: limit, page: page, lean: true, sort: {price: -1}})
         const {docs, hasPrevPage, hasNextPage, prevPage, nextPage, totalPages} = products
 
      
