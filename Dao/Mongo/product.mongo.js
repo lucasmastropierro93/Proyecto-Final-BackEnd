@@ -9,7 +9,7 @@ class ProductManagerMongo {
     }
     async getProducts(){
         try {
-            return await productModel.find({})
+            return await productModel.find({}).lean()
         } catch (error) {
             console.log("error en getproducts");
         }

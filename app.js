@@ -4,9 +4,11 @@ const productRouter = require("./routes/products");
 const cartRouter = require("./routes/carts");
 const cookieParser = require("cookie-parser");
 const express = require("express");
+const session = require("express-session")
 const { uploader } = require("./utils/utils");
 const viewsRouter = require("./routes/views");
 const userRouter = require("./routes/users")
+const pruebasRouter = require("./routes/pruebas")
 const logger = require("morgan")
 const app = express();
 const ProductManager = require("./Dao/FileSystem/ProductManager");
@@ -42,10 +44,17 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/static", express.static(__dirname + "/public"));
 // middleware de terceros
-app.use(cookieParser());
+app.use(session({
+  secret: "secretCoder",
+  resave: true,
+  saveUninitialized: true
+
+}))
+app.use(cookieParser('P@l@br@S3CR3T@'));
 app.use('/api/usuarios',  userRouter)
 app.use("/api/productos", productRouter);
 app.use("/api/carritos", cartRouter);
+app.use("/pruebas", pruebasRouter);
 //--------------------------MULTER------------------------------
 app.post("/single", uploader.single("myfile"), (req, res) => {
   res.status(200).send({ status: "success" });

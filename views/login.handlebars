@@ -1,0 +1,16 @@
+<div>
+  <h1>INYECTANDO COOKIES</h1>
+  {{!--<form id="cookieForm" onsubmit="return false">--}}
+    <form id="cookieForm" action="/pruebas/session" method="POST">
+    <label>Usuario</label>
+    <input name="username" />
+    <br />
+    <label>Password</label>
+    {{!--<input name="email">--}}
+    <input name="password">
+    <input type="submit">
+
+  </form>
+  {{!--<button onclick="getCookie()">Ver cookie</button>--}}
+</div>
+{{!--<script src="/static/js/cookieSetter.js"></script>--}}

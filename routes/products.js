@@ -37,10 +37,10 @@ router.get("/", async (req, res) => {
     console.log(error);
   }
 });
-router.get("/:id", async (req, res) => {
+router.get("/:pid", async (req, res) => {
   try {
-    const params = Number(req.params.id);
-    const product = await productManager.getProductById(params);
+    const { pid }  = req.params
+    const product = await productManager.getProductById(pid);
     if(isNaN(params)) return console.log("no es un numero el valor ingresado");
     res.send(product);
   } catch (error) {
@@ -59,16 +59,16 @@ router.post("/", async (req, res) => {
 });
 router.put("/:pid", async (req, res) => {
   try {
-    const pid = parseInt(req.params.pid);
-    const prod = req.body;
-    await productManager.updateProduct(pid, prod);
-    res.send(productManager);
+    const {pid} = req.params
+    const {prod} = req.body;
+    const result = await productManager.updateProduct(pid, prod);
+    res.send(result);
   } catch (err) {
     console.log(err);
   }
 });
 router.delete("/:pid", async (req, res) => {
-  const pid = parseInt(req.params.pid);
+  const {pid} = req.params
   res.send({
     status: "Success",
     message: await productManager.deleteProduct(pid),
