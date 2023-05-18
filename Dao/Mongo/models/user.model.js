@@ -1,5 +1,5 @@
 const { Schema, model } = require("mongoose");
-const mongoosePaginate = require("mongoose-paginate-v2")
+const mongoosePaginate = require("mongoose-paginate-v2");
 
 const collection = "usuarios";
 
@@ -17,10 +17,13 @@ const userSchema = new Schema({
     required: true,
     unique: true,
   },
-  gender: String,
+  password: {
+    type: String,
+    required: true,
+  },
 });
 
-userSchema.plugin(mongoosePaginate)
+userSchema.plugin(mongoosePaginate);
 
 const userModel = model(collection, userSchema);
 

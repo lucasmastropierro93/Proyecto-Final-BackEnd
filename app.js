@@ -5,10 +5,13 @@ const cartRouter = require("./routes/carts");
 const cookieParser = require("cookie-parser");
 const express = require("express");
 const session = require("express-session")
+const FileStore = require("session-file-store")
+const {create} = require("connect-mongo")
 const { uploader } = require("./utils/utils");
 const viewsRouter = require("./routes/views");
 const userRouter = require("./routes/users")
 const pruebasRouter = require("./routes/pruebas")
+const sessionRouter = require("./routes/session")
 const logger = require("morgan")
 const app = express();
 const ProductManager = require("./Dao/FileSystem/ProductManager");
@@ -43,18 +46,54 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/static", express.static(__dirname + "/public"));
+
+//-----------------------------------------------------------------------------------------------
 // middleware de terceros
-app.use(session({
+
+/*app.use(session({
   secret: "secretCoder",
   resave: true,
   saveUninitialized: true
 
-}))
+}))*/
 app.use(cookieParser('P@l@br@S3CR3T@'));
+/*
+              CON FILE STORE
+const fileStore = FileStore(session)
+
+app.use(session({
+  store: new fileStore({
+    ttl: 100000*60,
+    path: './session',
+    retries: 0
+  }),
+  secret: "secretCoder",
+  resave: true,
+  saveUninitialized: true
+
+}))*/
+/* CON MONGO*/
+app.use(session({
+  store: create({
+    mongoUrl: "mongodb+srv://lucasmastro93:CiIL09iL8xgzBdje@cluster0.dgibp03.mongodb.net/Ecommerce?retryWrites=true&w=majority",
+    mongoOptions: {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    },
+    ttl: 1000,
+    
+  }),
+  secret: "secretCoder",
+  resave: false,
+  saveUninitialized: false
+
+}))
+//*************************************************************************************************** */
 app.use('/api/usuarios',  userRouter)
 app.use("/api/productos", productRouter);
 app.use("/api/carritos", cartRouter);
 app.use("/pruebas", pruebasRouter);
+app.use("/api/session", sessionRouter)
 //--------------------------MULTER------------------------------
 app.post("/single", uploader.single("myfile"), (req, res) => {
   res.status(200).send({ status: "success" });

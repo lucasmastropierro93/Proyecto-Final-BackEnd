@@ -1,16 +1,15 @@
 <div>
   <h1>INYECTANDO COOKIES</h1>
-  {{!--<form id="cookieForm" onsubmit="return false">--}}
-    <form id="cookieForm" action="/pruebas/session" method="POST">
-    <label>Usuario</label>
-    <input name="username" />
+  {{!<form id="cookieForm" onsubmit="return false">}}
+  <form id="cookieForm" action="/api/session/login" method="POST">
+    <label for="username">Email</label>
+    <input type="email" name="email" required placeholder="example@example" />
     <br />
-    <label>Password</label>
-    {{!--<input name="email">--}}
-    <input name="password">
-    <input type="submit">
-
+    <label for="email">Password</label>
+    {{! <input name="email"> }}
+    <input type="password" name="password" required placeholder="*******" />
+    <input type="submit" />
   </form>
-  {{!--<button onclick="getCookie()">Ver cookie</button>--}}
+  {{!<button onclick="getCookie()">Ver cookie</button>}}
 </div>
-{{!--<script src="/static/js/cookieSetter.js"></script>--}}
+{{!<script src="/static/js/cookieSetter.js"></script>}}

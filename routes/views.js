@@ -50,7 +50,8 @@ router.get('/carts/:cid', async(req,res)=>{
       }else{
           let products= cart.products
           res.status(201).render('cart', {
-              products
+              products,
+              id: cart._id
           })
       }
       
@@ -63,4 +64,14 @@ router.get('/carts/:cid', async(req,res)=>{
 router.get("/chat", (req, res) => {
   res.render("chat", {});
 });
+router.get('/login', (req, res) => {
+  res.render('login', {
+  })
+})
+router.get('/register', (req, res) => {
+  res.render('registerForm', {
+      
+  })
+})
+
 module.exports = router
