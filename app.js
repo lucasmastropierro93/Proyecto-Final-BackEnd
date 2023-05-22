@@ -30,6 +30,10 @@ app.use("/", viewsRouter);
 const { Server } = require("socket.io");
 const { socketProduct } = require("./utils/socketProduct");
 
+// PASSPORT
+const { initPassport } = require("./config/passportConfig");
+const passport = require("passport");
+
 const httpServer = app.listen(8080, () => {
   console.log("Running on port 8080");
 });
@@ -88,6 +92,12 @@ app.use(session({
   saveUninitialized: false
 
 }))
+
+
+initPassport()
+passport.use(passport.initialize())
+passport.use(passport.session())
+
 //*************************************************************************************************** */
 app.use('/api/usuarios',  userRouter)
 app.use("/api/productos", productRouter);
