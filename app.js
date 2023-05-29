@@ -32,8 +32,9 @@ const { socketProduct } = require("./utils/socketProduct");
 
 // PASSPORT
 const { initPassortGithub } = require("./config/passportConfig");
-const passport = require("passport");
 const { initPassport} = require("./config/passport-jwt-config")
+const passport = require("passport");
+
 const httpServer = app.listen(8080, () => {
   console.log("Running on port 8080");
 });
@@ -60,7 +61,7 @@ app.use("/static", express.static(__dirname + "/public"));
   saveUninitialized: true
 
 }))*/
-app.use(cookieParser('P@l@br@S3CR3T@'));
+app.use(cookieParser('palabrasecreta'));
 /*
               CON FILE STORE
 const fileStore = FileStore(session)

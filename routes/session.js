@@ -5,7 +5,8 @@ const { createHash, isValidPassword } = require("../utils/bcryptHash");
 const passport = require("passport");
 const { generateToken } = require("../utils/jwt");
 const { passportCall } = require("../config/passportCall");
-const { authorization } = require("../config/authorizationjwtRole");
+const { authorization } = require("../config/authorizationJwtRole.js")
+
 
 const router = Router();
 
@@ -168,6 +169,8 @@ router.get('/githubcallback', passport.authenticate('github', {failureRedirect: 
     res.redirect('/api/productos')
 })
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 router.post('/login', async(req, res)=>{
   let {email, password} = req.body
   email = email.trim();
@@ -199,8 +202,7 @@ router.post('/login', async(req, res)=>{
       role: 'user'
   })
 
-  res
-  .cookie('coderCookieToken', accessToken, {
+  res.cookie('coderCookieToken', accessToken, {
       maxAge: 60*60*100,
       httpOnly: true
   }).redirect('/')

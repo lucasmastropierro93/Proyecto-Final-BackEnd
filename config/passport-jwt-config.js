@@ -23,7 +23,7 @@ const initPassport= ()=>{
         try {
             return done(null, jwt_payload)
         } catch (error) {
-            console.log(error)
+            console.log("error en jwt")
         }
     }))
 }
