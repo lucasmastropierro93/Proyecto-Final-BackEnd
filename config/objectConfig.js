@@ -6,6 +6,7 @@ let url =
   "mongodb+srv://lucasmastro93:CiIL09iL8xgzBdje@cluster0.dgibp03.mongodb.net/Ecommerce?retryWrites=true&w=majority";
 
 module.exports = {
+  jwt_secret_key: 'palabrasecreta',
   connectDB: async () => {
     try {
       connect(url);

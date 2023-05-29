@@ -31,9 +31,9 @@ const { Server } = require("socket.io");
 const { socketProduct } = require("./utils/socketProduct");
 
 // PASSPORT
-const { initPassport } = require("./config/passportConfig");
+const { initPassortGithub } = require("./config/passportConfig");
 const passport = require("passport");
-
+const { initPassport} = require("./config/passport-jwt-config")
 const httpServer = app.listen(8080, () => {
   console.log("Running on port 8080");
 });
@@ -95,6 +95,7 @@ app.use(session({
 
 
 initPassport()
+initPassortGithub()
 passport.use(passport.initialize())
 passport.use(passport.session())
 

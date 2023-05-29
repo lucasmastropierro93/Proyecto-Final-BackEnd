@@ -1,8 +1,11 @@
 const { Router } = require("express");
 const { auth } = require("../middlewares/auth");
 const { userModel } = require("../Dao/Mongo/models/user.model");
-const { createHash } = require("../utils/bcryptHash");
+const { createHash, isValidPassword } = require("../utils/bcryptHash");
 const passport = require("passport");
+const { generateToken } = require("../utils/jwt");
+const { passportCall } = require("../config/passportCall");
+const { authorization } = require("../config/authorizationjwtRole");
 
 const router = Router();
 
@@ -28,6 +31,7 @@ router.get("/logout", (req, res) => {
 router.get("/privada", auth, (req, res) => {
   res.send("Todo lo que esta acá solo lo puede ver un admin loagueado");
 });
+/*
 router.get('/failregister', async (req,res)=>{
   console.log('Falló la estrategia')
   res.send({status: 'error', error: 'falló autenticación'})
@@ -36,7 +40,7 @@ router.get('/faillogin', async (req,res)=>{
   console.log('Falló la estrategia')
   res.send({status: 'error', error: 'falló autenticación'})
 })
-
+*/
 ///////////////////////////////////////////POST SESSIONS//////////////////////////////////////////////////
 /*
 router.post("/login", async (req, res) => {
@@ -109,6 +113,7 @@ router.post("/register", async (req, res) => {
 });
 */
 // login
+/*
 router.post('/login', passport.authenticate('login', {failureRedirect: '/faillogin'}), async (req,res) => { 
   if (!req.user) return res.status(401).send({status: 'error', message: 'invalid credencial'})
   req.session.user= {
@@ -123,7 +128,7 @@ router.post('/login', passport.authenticate('login', {failureRedirect: '/faillog
 router.post('/register', passport.authenticate('register', {failureRedirect: '/failregister'}), async (req,res) => {    
   res.send({status: 'success', message: 'User registered'})
 })
-
+*/
 
 router.post("/restaurarpass", async (req, res) => {
   const { email, password } = req.body;
@@ -151,4 +156,95 @@ router.post("/restaurarpass", async (req, res) => {
     });
 });
 
+
+
+
+///////////////////////////////////////////////////////////////////////CON GITHUB////////////////////////////////////////////
+
+
+router.get('/github', passport.authenticate('github', {scope: ['user:email']}), ()=>{})
+router.get('/githubcallback', passport.authenticate('github', {failureRedirect: '/login'}), async (req, res)=>{
+    req.session.user = req.user
+    res.redirect('/api/productos')
+})
+
+router.post('/login', async(req, res)=>{
+  let {email, password} = req.body
+  email = email.trim();
+  password = password.trim();
+  if (!email || !password) {
+      return res.status(400).send({ status: 'error', message: 'El email y la contraseña son obligatorios' });
+  }
+
+  const userDB = await userModel.findOne({email})
+  if(!userDB) return res.status(404).send({status: 'error', message: 'usuario incorrecto'})
+
+  if(!isValidPassword(password, userDB)) return res.status(401).send({status:'error', message:'contraseña incorrecta'})
+
+  req.session.user ={
+      first_name: userDB.first_name,
+      last_name: userDB.last_name,
+      email: userDB.email,
+      date_of_birth: userDB.date_of_birth,
+      username: userDB.username,
+      role: 'user'
+  }
+
+  const accessToken = generateToken({
+      first_name: userDB.first_name,
+      last_name: userDB.last_name,
+      email: userDB.email,
+      date_of_birth: userDB.date_of_birth,
+      username: userDB.username,
+      role: 'user'
+  })
+
+  res
+  .cookie('coderCookieToken', accessToken, {
+      maxAge: 60*60*100,
+      httpOnly: true
+  }).redirect('/')
+})
+
+
+
+router.post('/register',async(req,res)=>{ 
+  const{username, first_name, last_name, email, date_of_birth, password} = req.body
+  const existUser= await userModel.findOne({email})
+  if(existUser) return res.send({status: 'error', message:'el email ya existe'})
+
+  const newUser={
+      username,
+      first_name,
+      last_name,
+      email,
+      date_of_birth,
+      username,
+      password : createHash(password)
+  }
+
+  await userModel.create(newUser)
+  const accessToken = generateToken({
+      first_name: newUser.first_name,
+      last_name: newUser.last_name,
+      email: newUser.email,
+      date_of_birth: newUser.date_of_birth,
+      username: newUser.username,
+      role: 'user'
+  })
+
+  res
+  .cookie('coderCookieToken', accessToken, {
+      maxAge: 60*60*100,
+      httpOnly: true
+  }).send({
+      status:'success',
+      message: 'register success',
+  })
+  
+})
+
+router.get('/current', passportCall('jwt', {session: false}), authorization('user') ,(req,res)=>{
+  res.send(req.user)
+})
 module.exports = router;

@@ -1,5 +1,5 @@
 const { Schema, model } = require("mongoose");
-const mongoosePaginate = require("mongoose-paginate-v2");
+//const mongoosePaginate = require("mongoose-paginate-v2");
 
 const collection = "usuarios";
 
@@ -21,9 +21,13 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
+  date_of_birth:{
+    type: Date,
+    required: true
+}
 });
 
-userSchema.plugin(mongoosePaginate);
+//userSchema.plugin(mongoosePaginate);
 
 const userModel = model(collection, userSchema);
 
