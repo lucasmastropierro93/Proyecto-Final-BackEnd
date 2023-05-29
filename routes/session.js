@@ -163,12 +163,13 @@ router.post("/restaurarpass", async (req, res) => {
 ///////////////////////////////////////////////////////////////////////CON GITHUB////////////////////////////////////////////
 
 
-router.get('/github', passport.authenticate('github', {scope: ['user:email']}), ()=>{})
-router.get('/githubcallback', passport.authenticate('github', {failureRedirect: '/login'}), async (req, res)=>{
-    req.session.user = req.user
-    res.redirect('/api/productos')
-})
 
+
+router.get('/github', passport.authenticate('github', {scope:['user:email']}))
+router.get('/githubcallback',passport.authenticate('github',{failureRedirect:'/api/session/login'}), async(req,res)=>{
+    req.session.user = req.user 
+    res.redirect('/')
+})
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 router.post('/login', async(req, res)=>{
