@@ -28,9 +28,9 @@ class ProductManagerMongo {
             console.log("error en addproducts");
         }
     }
-    async updateProduct(pid, newProduct){
+    async updateProduct(pid, obj){
         try {
-            return await productModel.updateOne({_id: pid},newProduct)
+            return await productModel.updateOne({_id: pid}, obj)
         } catch (error) {
            console.log("error en updateProduct");
         }

@@ -11,7 +11,7 @@ const productSchema = new Schema({
     type: String,
     required: true,
   },
-  thumbnail: String,
+  thumbnail: [String],
   price: {
     type: Number,
     required: true,
@@ -21,13 +21,10 @@ const productSchema = new Schema({
     required: true,
   },
   category: {
-    type: Number,
+    type: String,
     required: true,
   },
-  status: {
-    type: Boolean,
-    default: true,
-  },
+ 
   code: {
     type: String,
     unique: true,

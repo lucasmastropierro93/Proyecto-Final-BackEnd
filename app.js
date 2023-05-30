@@ -1,5 +1,7 @@
 // IMPORTSSSS
+const mongoose = require('mongoose')
 const objectConfig = require("../src/config/objectConfig")
+const routerIndex = require("./routes/index")
 const productRouter = require("./routes/products");
 const cartRouter = require("./routes/carts");
 const cookieParser = require("cookie-parser");
@@ -15,8 +17,10 @@ const sessionRouter = require("./routes/session")
 const logger = require("morgan")
 const app = express();
 const ProductManager = require("./Dao/FileSystem/ProductManager");
-
+const productmanagers = require("./Dao/Mongo/product.mongo")
 const productsList = new ProductManager("./data.json");
+const ObjectId = mongoose.Types.ObjectId
+
 // ----------------------------------------HANDLEBARS-------------------------
 const handlebars = require("express-handlebars");
 
@@ -28,7 +32,7 @@ app.use("/", viewsRouter);
 
 //----------------------------SOCKET-------------------------------------------------------------------------------------
 const { Server } = require("socket.io");
-const { socketProduct } = require("./utils/socketProduct");
+
 
 // PASSPORT
 const { initPassortGithub } = require("./config/passportConfig");
@@ -42,7 +46,7 @@ const httpServer = app.listen(8080, () => {
 const io = new Server(httpServer);
 
 
-socketProduct(io)
+
 //------------------------------------- APP USE ----------------
 app.use(logger('dev'))
 
@@ -50,8 +54,7 @@ app.use(logger('dev'))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/static", express.static(__dirname + "/public"));
-
+app.use('/static', express.static(__dirname+'/public'))
 //-----------------------------------------------------------------------------------------------
 // middleware de terceros
 
@@ -101,11 +104,7 @@ passport.use(passport.initialize())
 passport.use(passport.session())
 
 //*************************************************************************************************** */
-app.use('/api/usuarios',  userRouter)
-app.use("/api/productos", productRouter);
-app.use("/api/carritos", cartRouter);
-app.use("/pruebas", pruebasRouter);
-app.use("/api/session", sessionRouter)
+app.use(routerIndex)
 //--------------------------MULTER------------------------------
 app.post("/single", uploader.single("myfile"), (req, res) => {
   res.status(200).send({ status: "success" });
@@ -121,7 +120,43 @@ app.use((err, req, res, next) => {
   res.status(500).send("Algo salio mal");
 });
 
+//-----------------------REALTIMEPRODUCT----------------------------------//
+io.on('connection', socket=>{
+	console.log("cliente conectado en tiempo real a los productos")
+	
+	socket.on('deleteProduct', async (pid)=>{
+		try{
+			const isValidObjectId = ObjectId.isValid(pid.id)
+			if (!isValidObjectId) {
+			  return socket.emit('newList', {status: "error", message: `El ID del producto es inválido`})
+			}
+		  
+			const product = await productmanagers.getProductById(pid.id)
+			if(product) {
+			  await productmanagers.deleteProduct(pid.id)
+			  const data = await productmanagers.getProducts()
+			  return socket.emit('newList', data)
+			}
+			return socket.emit('newList', {status: "error", message: `El producto con ID ${pid.id} no existe`})
+		}catch(err){
+			console.log(err)
+		}
+	})
 
+
+
+	
+	socket.on('addProducts', async (data) => {
+		try {
+			await productmanagers.addProducts(data);
+			const newData = await productmanagers.getProducts()
+			return socket.emit('productAdded', newData)
+		} catch (error) {
+			return socket.emit('productAdded', { status: 'error', message: `El code: ${data.code} ya existe!`})
+		}
+    })
+
+})
 //-----------------------CHAT    ------------------------------------------------
 
 let  messages = []

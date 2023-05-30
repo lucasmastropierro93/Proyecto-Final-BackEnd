@@ -1,3 +1,4 @@
+console.log("realtimeproducts");
 const socket = io()
 
 
@@ -86,7 +87,7 @@ const thumbnail = document.getElementById('thumbnail')
 addForm.addEventListener('submit', evt => {
     evt.preventDefault()
 
-    socket.emit('addProduct', {
+    socket.emit('addProducts', {
         title: title.value,
         description: description.value,
         price: parseInt(price.value),
