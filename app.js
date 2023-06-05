@@ -2,8 +2,6 @@
 const mongoose = require('mongoose')
 const objectConfig = require("../src/config/objectConfig")
 const routerIndex = require("./routes/index")
-const productRouter = require("./routes/products");
-const cartRouter = require("./routes/carts");
 const cookieParser = require("cookie-parser");
 const express = require("express");
 const session = require("express-session")
@@ -11,14 +9,11 @@ const FileStore = require("session-file-store")
 const {create} = require("connect-mongo")
 const { uploader } = require("./utils/utils");
 const viewsRouter = require("./routes/views");
-const userRouter = require("./routes/users")
-const pruebasRouter = require("./routes/pruebas")
-const sessionRouter = require("./routes/session")
 const logger = require("morgan")
 const app = express();
 const ProductManager = require("./Dao/FileSystem/ProductManager");
 const productmanagers = require("./Dao/Mongo/product.mongo")
-const productsList = new ProductManager("./data.json");
+
 const ObjectId = mongoose.Types.ObjectId
 
 // ----------------------------------------HANDLEBARS-------------------------
@@ -88,10 +83,10 @@ app.use(session({
       useNewUrlParser: true,
       useUnifiedTopology: true
     },
-    ttl: 1000,
+    ttl: 100000*60,
     
   }),
-  secret: "secretCoder",
+  secret: "palabrasecreta",
   resave: false,
   saveUninitialized: false
 

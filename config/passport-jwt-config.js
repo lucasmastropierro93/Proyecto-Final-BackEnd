@@ -5,7 +5,8 @@ const configServer = require('./objectConfig')
 const JWTStrategy = Strategy
 const extractJWT = ExtractJwt
 
-const cookieExtractor = req =>{
+const cookieExtractor = (req) => {
+    
     let token= null
     if(req && req.cookies){
         token = req.cookies['coderCookieToken']

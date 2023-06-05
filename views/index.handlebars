@@ -1,8 +1,19 @@
-
+{{#if user}}
+<div class="d-flex flex-column mx-2">
+        <p class="m-0 text-white" style="font-size: 15px">{{user.username}}</p>
+        <p class="m-0 text-white" style="font-size: 12px">{{user.email}} </p>
+        <p class="m-0 text-white" style="font-size: 12px">role:{{user.role}} </p>
+</div>
+<button class="btn btn-warning h-50 my-auto"><a href="/api/session/logout" class="text-decoration-none text-dark">Log out</a></button>
+{{else}}
+<div>
+      <button class="btn btn-warning mx-2"><a href="/api/session/login" class="text-decoration-none text-dark">Log In</a></button>
+ </div>
+  {{/if}}
 <div>
     <h1>Listado de Productos</h1>
         {{#each products}}
-            <ul>
+            <ul>    
                 <li>ID: {{this._id}}</li>
                 <li>Title: {{this.title}}</li>
                 <li>Description: {{this.description}}</li>

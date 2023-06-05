@@ -5,16 +5,21 @@ const router = Router()
 const producto = require("../Dao/Mongo/product.mongo")
 const productModel = require("../Dao/Mongo/models/product.model")
 const cartsManager = require("../Dao/Mongo/cart.mongo")
+const userList = require("../Dao/Mongo/user.mongo")
+const { userModel } = require('../Dao/Mongo/models/user.model')
+const passport = require("passport");
 
 
 router.get('/', async(req, res) =>{
     try {
+     let user = req.session.user
       const   payload   =  await producto.getProducts()
-
+      
       const object = {
         
         title: "Productos",
         products: payload,
+        user
     };
   res.render('index', object)
     } catch (error) {

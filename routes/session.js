@@ -6,12 +6,12 @@ const passport = require("passport");
 const { generateToken } = require("../utils/jwt");
 const { passportCall } = require("../config/passportCall");
 const { authorization } = require("../config/authorizationJwtRole.js")
-
+const userManager = require("../Dao/Mongo/user.mongo")
 
 const router = Router();
 
 ////////////////////////////////////////////////////////GET SESSIONS////////////////////////////////////
-
+/*
 router.get("/counter", (req, res) => {
   if (req.session.counter) {
     req.session.counter++;
@@ -20,7 +20,7 @@ router.get("/counter", (req, res) => {
     req.session.counter = 1;
     res.send("Bienvenido");
   }
-});
+});*/
 router.get("/logout", (req, res) => {
   req.session.destroy((err) => {
     if (err) {
@@ -113,6 +113,7 @@ router.post("/register", async (req, res) => {
   }
 });
 */
+
 // login
 /*
 router.post('/login', passport.authenticate('login', {failureRedirect: '/faillogin'}), async (req,res) => { 
@@ -120,14 +121,25 @@ router.post('/login', passport.authenticate('login', {failureRedirect: '/faillog
   req.session.user= {
       first_name: req.user.first_name,
       last_name: req.user.last_name,
+      dateOfBirth: req.user.dateOfBirth, 
+      username: req.user.username, 
       email: req.user.email
   }
-  res.send({status: 'success', message: 'User registered'})
+  if (req.session.user.email === 'adminCoder@coder.com') {
+    logedUserRole = 'admin'
+} else {
+    logedUserRole = 'user'
+}
+req.session.user.role = logedUserRole
+res.redirect('/')
+ 
+
 })
 
 
 router.post('/register', passport.authenticate('register', {failureRedirect: '/failregister'}), async (req,res) => {    
-  res.send({status: 'success', message: 'User registered'})
+  
+  res.redirect('/login')
 })
 */
 
@@ -172,6 +184,7 @@ router.get('/githubcallback',passport.authenticate('github',{failureRedirect:'/a
 })
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 router.post('/login', async(req, res)=>{
   let {email, password} = req.body
   email = email.trim();
@@ -202,11 +215,12 @@ router.post('/login', async(req, res)=>{
       username: userDB.username,
       role: 'user'
   })
-
+  
   res.cookie('coderCookieToken', accessToken, {
       maxAge: 60*60*100,
       httpOnly: true
   }).redirect('/')
+  console.log(req.session.user);
 })
 
 
@@ -240,10 +254,7 @@ router.post('/register',async(req,res)=>{
   .cookie('coderCookieToken', accessToken, {
       maxAge: 60*60*100,
       httpOnly: true
-  }).send({
-      status:'success',
-      message: 'register success',
-  })
+  }).redirect('/login')
   
 })
 
