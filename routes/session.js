@@ -182,10 +182,11 @@ router.post("/login", sessionControllers.login);
 
 router.post("/register", sessionControllers.register);
 
+////////////////////////////// entrar con usuario adminCoder@code.com y contraseña admin1533/////////////////////////////////////
 router.get(
   "/current",
   passportCall("jwt", { session: false }),
-  authorization("user"),
+  authorization("admin"),
   (req, res) => {
     res.send(req.user);
   }

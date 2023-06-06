@@ -1,6 +1,6 @@
 const { Schema, model } = require('mongoose')
 
-const collection = 'carritos'
+const collection = 'carts'
 
 const cartSchema = new Schema({
     // email: String,
