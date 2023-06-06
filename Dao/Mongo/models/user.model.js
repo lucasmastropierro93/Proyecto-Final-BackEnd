@@ -21,17 +21,18 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-  date_of_birth:{
+  date_of_birth: {
     type: Date,
-    required: true
-},
-username:{
-  type: String,
-  required: true
-},
-role:{
-  type: String,
-}
+    required: true,
+  },
+  username: {
+    type: String,
+    required: true,
+  },
+  role: {
+    type: String,
+    default: "user",
+  },
 });
 
 //userSchema.plugin(mongoosePaginate);

@@ -5,8 +5,9 @@ const { createHash, isValidPassword } = require("../utils/bcryptHash");
 const passport = require("passport");
 const { generateToken } = require("../utils/jwt");
 const { passportCall } = require("../config/passportCall");
-const { authorization } = require("../config/authorizationJwtRole.js")
-const userManager = require("../Dao/Mongo/user.mongo")
+const { authorization } = require("../config/authorizationJwtRole.js");
+const userManager = require("../Dao/Mongo/user.mongo");
+const sessionControllers = require("../controllers/session.controllers");
 
 const router = Router();
 
@@ -21,14 +22,7 @@ router.get("/counter", (req, res) => {
     res.send("Bienvenido");
   }
 });*/
-router.get("/logout", (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      return res.send({ status: "error", error: err });
-    }
-    res.send("logout ok");
-  });
-});
+
 router.get("/privada", auth, (req, res) => {
   res.send("Todo lo que esta acá solo lo puede ver un admin loagueado");
 });
@@ -161,104 +155,40 @@ router.post("/restaurarpass", async (req, res) => {
   await userDB.save();
 
   // Redireccionar al usuario a la página de login
-  res
-    .status(200)
-    .json({
-      status: "success",
-      message: "Contraseña actualizada correctamente",
-    });
+  res.status(200).json({
+    status: "success",
+    message: "Contraseña actualizada correctamente",
+  });
 });
-
-
-
 
 ///////////////////////////////////////////////////////////////////////CON GITHUB////////////////////////////////////////////
 
-
-
-
-router.get('/github', passport.authenticate('github', {scope:['user:email']}))
-router.get('/githubcallback',passport.authenticate('github',{failureRedirect:'/api/session/login'}), async(req,res)=>{
-    req.session.user = req.user 
-    res.redirect('/')
-})
+router.get(
+  "/github",
+  passport.authenticate("github", { scope: ["user:email"] })
+);
+router.get(
+  "/githubcallback",
+  passport.authenticate("github", { failureRedirect: "/api/session/login" }),
+  async (req, res) => {
+    req.session.user = req.user;
+    res.redirect("/");
+  }
+);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-router.post('/login', async(req, res)=>{
-  let {email, password} = req.body
-  email = email.trim();
-  password = password.trim();
-  if (!email || !password) {
-      return res.status(400).send({ status: 'error', message: 'El email y la contraseña son obligatorios' });
+router.post("/login", sessionControllers.login);
+
+router.post("/register", sessionControllers.register);
+
+router.get(
+  "/current",
+  passportCall("jwt", { session: false }),
+  authorization("user"),
+  (req, res) => {
+    res.send(req.user);
   }
-
-  const userDB = await userModel.findOne({email})
-  if(!userDB) return res.status(404).send({status: 'error', message: 'usuario incorrecto'})
-
-  if(!isValidPassword(password, userDB)) return res.status(401).send({status:'error', message:'contraseña incorrecta'})
-
-  req.session.user ={
-      first_name: userDB.first_name,
-      last_name: userDB.last_name,
-      email: userDB.email,
-      date_of_birth: userDB.date_of_birth,
-      username: userDB.username,
-      role: 'user'
-  }
-
-  const accessToken = generateToken({
-      first_name: userDB.first_name,
-      last_name: userDB.last_name,
-      email: userDB.email,
-      date_of_birth: userDB.date_of_birth,
-      username: userDB.username,
-      role: 'user'
-  })
-  
-  res.cookie('coderCookieToken', accessToken, {
-      maxAge: 60*60*100,
-      httpOnly: true
-  }).redirect('/')
-  console.log(req.session.user);
-})
-
-
-
-router.post('/register',async(req,res)=>{ 
-  const{username, first_name, last_name, email, date_of_birth, password} = req.body
-  const existUser= await userModel.findOne({email})
-  if(existUser) return res.send({status: 'error', message:'el email ya existe'})
-
-  const newUser={
-      username,
-      first_name,
-      last_name,
-      email,
-      date_of_birth,
-      username,
-      password : createHash(password)
-  }
-
-  await userModel.create(newUser)
-  const accessToken = generateToken({
-      first_name: newUser.first_name,
-      last_name: newUser.last_name,
-      email: newUser.email,
-      date_of_birth: newUser.date_of_birth,
-      username: newUser.username,
-      role: 'user'
-  })
-
-  res
-  .cookie('coderCookieToken', accessToken, {
-      maxAge: 60*60*100,
-      httpOnly: true
-  }).redirect('/login')
-  
-})
-
-router.get('/current', passportCall('jwt', {session: false}), authorization('user') ,(req,res)=>{
-  res.send(req.user)
-})
+);
+router.get("/logout", sessionControllers.logout);
 module.exports = router;

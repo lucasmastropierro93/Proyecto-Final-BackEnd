@@ -13,7 +13,7 @@ const logger = require("morgan")
 const app = express();
 const ProductManager = require("./Dao/FileSystem/ProductManager");
 const productmanagers = require("./Dao/Mongo/product.mongo")
-
+const chatmanager = require("./Dao/Mongo/chat.mongo")
 const ObjectId = mongoose.Types.ObjectId
 
 // ----------------------------------------HANDLEBARS-------------------------
@@ -22,7 +22,7 @@ const handlebars = require("express-handlebars");
 app.engine("handlebars", handlebars.engine());
 app.set("views", __dirname+ "/views");
 app.set("view engine", "handlebars");
-app.use("/", viewsRouter);
+
 // hbs __________________________________________
 
 //----------------------------SOCKET-------------------------------------------------------------------------------------
@@ -100,6 +100,7 @@ passport.use(passport.session())
 
 //*************************************************************************************************** */
 app.use(routerIndex)
+
 //--------------------------MULTER------------------------------
 app.post("/single", uploader.single("myfile"), (req, res) => {
   res.status(200).send({ status: "success" });
@@ -154,14 +155,20 @@ io.on('connection', socket=>{
 })
 //-----------------------CHAT    ------------------------------------------------
 
-let  messages = []
+
 
 io.on('connection', socket => {
   console.log('Nuevo cliente conectado al chat  ')
-  socket.on('message', data => {
-       //console.log(data)
-      messages.push(data)
+  socket.on('message', async (data) => {
+    try {
+      await chatmanager.saveMessages(data)
+      const messages = await chatmanager.getMessages()
+  
       io.emit('messageLogs', messages)
+    } catch (error) {
+      console.log("error en chat");
+    }
+    
   })
   socket.on('authenticated', data => {
     socket.broadcast.emit('newUserConnected', data)

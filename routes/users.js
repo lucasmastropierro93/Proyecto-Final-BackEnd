@@ -1,3 +1,4 @@
+/*
 const { Router } = require("express");
 const { userModel } = require("../Dao/Mongo/models/user.model");
 
@@ -111,4 +112,4 @@ module.exports = router;
 // creamo el schema -> models
 // conexion (config)
 
-// creamos el crud user.router.js
+// creamos el crud user.router.js */

@@ -1,13 +1,16 @@
 {{#if user}}
 <div class="d-flex flex-column mx-2">
-        <p class="m-0 text-white" style="font-size: 15px">{{user.username}}</p>
-        <p class="m-0 text-white" style="font-size: 12px">{{user.email}} </p>
-        <p class="m-0 text-white" style="font-size: 12px">role:{{user.role}} </p>
+        <h2 class="m-0 text-white" style="font-size: 15px">{{user.username}}</h2>
+        <h3 class="m-0 text-white" style="font-size: 12px">{{user.email}} </h3>
+        <h3 class="m-0 text-white" style="font-size: 12px">role:{{user.role}} </h3>
 </div>
 <button class="btn btn-warning h-50 my-auto"><a href="/api/session/logout" class="text-decoration-none text-dark">Log out</a></button>
 {{else}}
 <div>
-      <button class="btn btn-warning mx-2"><a href="/api/session/login" class="text-decoration-none text-dark">Log In</a></button>
+      <button class="btn btn-warning mx-2"><a href="/login" class="text-decoration-none text-dark">Log In</a></button>
+      <button class="btn btn-warning mx-2"><a href="/register" class="text-decoration-none text-dark">Register</a></button>
+      <button class="btn btn-warning mx-2"><a href="/realTimeProducts" class="text-decoration-none text-dark">realTimeProducts</a></button>
+      <button class="btn btn-warning mx-2"><a href="/chat" class="text-decoration-none text-dark">chat</a></button>
  </div>
   {{/if}}
 <div>
