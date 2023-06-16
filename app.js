@@ -12,7 +12,7 @@ const viewsRouter = require("./routes/views");
 const logger = require("morgan")
 const app = express();
 const ProductManager = require("./Dao/FileSystem/ProductManager");
-const productmanagers = require("./Dao/Mongo/product.mongo")
+
 const chatmanager = require("./Dao/Mongo/chat.mongo")
 const ObjectId = mongoose.Types.ObjectId
 
@@ -33,6 +33,7 @@ const { Server } = require("socket.io");
 const { initPassortGithub } = require("./config/passportConfig");
 const { initPassport} = require("./config/passport-jwt-config")
 const passport = require("passport");
+const { productService } = require('./service/service');
 
 const httpServer = app.listen(8080, () => {
   console.log("Running on port 8080");
@@ -127,10 +128,10 @@ io.on('connection', socket=>{
 			  return socket.emit('newList', {status: "error", message: `El ID del producto es inválido`})
 			}
 		  
-			const product = await productmanagers.getProductById(pid.id)
+			const product = await productService.getProductById(pid.id)
 			if(product) {
-			  await productmanagers.deleteProduct(pid.id)
-			  const data = await productmanagers.getProducts()
+			  await productService.deleteProduct(pid.id)
+			  const data = await productService.getProducts()
 			  return socket.emit('newList', data)
 			}
 			return socket.emit('newList', {status: "error", message: `El producto con ID ${pid.id} no existe`})
@@ -144,8 +145,8 @@ io.on('connection', socket=>{
 	
 	socket.on('addProducts', async (data) => {
 		try {
-			await productmanagers.addProducts(data);
-			const newData = await productmanagers.getProducts()
+			await productService.addProducts(data);
+			const newData = await productService.getProducts()
 			return socket.emit('productAdded', newData)
 		} catch (error) {
 			return socket.emit('productAdded', { status: 'error', message: `El code: ${data.code} ya existe!`})

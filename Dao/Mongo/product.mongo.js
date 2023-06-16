@@ -43,4 +43,4 @@ class ProductManagerMongo {
         }
     }
 }
-module.exports =  new ProductManagerMongo
+module.exports = ProductManagerMongo

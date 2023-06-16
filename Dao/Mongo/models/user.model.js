@@ -1,4 +1,4 @@
-const { Schema, model } = require("mongoose");
+const { Schema, model, SchemaType } = require("mongoose");
 //const mongoosePaginate = require("mongoose-paginate-v2");
 
 const collection = "users";
@@ -33,6 +33,10 @@ const userSchema = new Schema({
     type: String,
     default: "user",
   },
+  cart: {
+    type: Schema.Types.ObjectId,
+    ref: 'carts',
+  }
 });
 
 //userSchema.plugin(mongoosePaginate);

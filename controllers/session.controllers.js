@@ -2,7 +2,9 @@ const { Session } = require("express-session");
 const { userModel } = require("../Dao/Mongo/models/user.model");
 const { generateToken } = require("../utils/jwt");
 const { createHash, isValidPassword } = require("../utils/bcryptHash");
-const cartmanager = require("../Dao/Mongo/cart.mongo")
+
+const { userService, cartService } = require("../service/service");
+
 
 class SessionController {
   login = async (req, res) => {
@@ -16,7 +18,7 @@ class SessionController {
       });
     }
 
-    const userDB = await userModel.findOne({ email });
+    const userDB = await userService.getUserByEmail(email);
     if (!userDB)
       return res
         .status(404)
@@ -58,11 +60,11 @@ class SessionController {
   register = async (req, res) => {
     const { username, first_name, last_name, email, date_of_birth, password } =
       req.body;
-    const existUser = await userModel.findOne({ email });
+    const existUser = await userService.getUserByEmail( email );
     if (existUser) return res.send({ status: "error", message: "el email ya existe" });
 
     const newCart = {products:[]}
-    const cart = await cartmanager.createCart(newCart)
+    const cart = await cartService.createCart(newCart)
     let role = userModel.schema.path('role').default()
     const newUser = {
       username,
@@ -76,7 +78,7 @@ class SessionController {
       cart: cart._id,
     };
 
-    await userModel.create(newUser);
+    await userService.addUser(newUser);
     const accessToken = generateToken({
       first_name: newUser.first_name,
       last_name: newUser.last_name,
@@ -103,6 +105,29 @@ class SessionController {
       }
     });
   };
+  restorePass = async (req, res) => {
+    const { email, password } = req.body;
+  
+    // Encontrar el usuario por correo electrónico
+    const userDB = await userModel.findOne({ email });
+  
+    if (!userDB) {
+      // Si el usuario no existe, redireccionar a una página de error
+      return res
+        .status(401)
+        .send({ status: "error", message: "El usuario no existe" });
+    }
+  
+    //Hasear Actualizar la contraseña del usuario
+    userDB.password = createHash(password);
+    await userDB.save();
+  
+    // Redireccionar al usuario a la página de login
+    res.status(200).json({
+      status: "success",
+      message: "Contraseña actualizada correctamente",
+    });
+  }
 }
 
 module.exports = new SessionController();

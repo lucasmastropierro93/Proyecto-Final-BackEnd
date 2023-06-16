@@ -1,10 +1,12 @@
 <div>
   <h1>LOGIN</h1>
   {{!<form id="cookieForm" onsubmit="return false">}}
+
   <form id="cookieForm" action="/api/session/login" method="POST">
-    <label for="username">Email</label>
+  <div class="mb-3">
+    <label for="username" class="form-label">Email</label>
     <input type="email" name="email" required placeholder="example@example" />
-    <br />
+  </div>
     <label for="email">Password</label>
     {{! <input name="email"> }}
     <input type="password" name="password" required placeholder="*******" />
@@ -18,3 +20,5 @@
   {{!<button onclick="getCookie()">Ver cookie</button>}}
 </div>
 {{!<script src="/static/js/cookieSetter.js"></script>}}
+
+

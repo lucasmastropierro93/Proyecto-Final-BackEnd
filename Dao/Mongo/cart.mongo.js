@@ -98,4 +98,4 @@ async modifyProductFromCart(cid, pid, quantity){
 }
 }
 
-module.exports = new CartManagerMongo();
+module.exports = CartManagerMongo;

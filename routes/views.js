@@ -2,18 +2,19 @@ const { Router } = require('express')
 //const ProductManager = require("../Dao/FileSystem/ProductManager")
 const router = Router()
 //const producto = new ProductManager("./data.json")
-const producto = require("../Dao/Mongo/product.mongo")
+
 const productModel = require("../Dao/Mongo/models/product.model")
-const cartsManager = require("../Dao/Mongo/cart.mongo")
+
 const userList = require("../Dao/Mongo/user.mongo")
 const { userModel } = require('../Dao/Mongo/models/user.model')
 const passport = require("passport");
+const { productService, cartService } = require('../service/service')
 
 
 router.get('/', async(req, res) =>{
     try {
      let user = req.session.user
-      const   payload   =  await producto.getProducts()
+      const   payload   =  await productService.getProducts()
       
       const object = {
         
@@ -30,7 +31,7 @@ router.get('/', async(req, res) =>{
 
 router.get('/realtimeproducts', async(req, res) =>{
   try {
-    const  payload  =  await producto.getProducts()
+    const  payload  =  await productService.getProducts()
     const object = {
 
       title: "Productos en tiempo real",
@@ -49,7 +50,7 @@ router.get('/carts/:cid', async(req,res)=>{
 
   try{
       const {cid} = req.params
-      const cart = await cartsManager.getCartstById(cid)
+      const cart = await cartService.getCartstById(cid)
       if(!cart){
           res.status(404).send({ message: `El carrito con ID ${cid} no existe` })
       }else{

@@ -50,4 +50,4 @@ class UserManagerMongo {
     }
   }
 }
-module.exports = new UserManagerMongo;
+module.exports =  UserManagerMongo;
