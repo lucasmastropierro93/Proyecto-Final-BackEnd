@@ -1,7 +1,7 @@
 const fs = require("fs");
 
 let productos = [];
-class ProductManager {
+class ProductDaoFile {
   constructor(filePath) {
     this.path = filePath;
     this.products = productos;
@@ -116,7 +116,7 @@ class ProductManager {
   };
 }
 
-const product = new ProductManager("./Productos.json");
+const product = new ProductDaoFile("./Productos.json");
 /*
 const fileUse = async () => {
     console.log(await product.addProducts('Producto prueba', 'Este es un producto de prueba', 200, 'sin imagen', 001, 25))
@@ -134,4 +134,4 @@ const fileUse = async () => {
 
 fileUse()
 */
-module.exports = ProductManager;
+module.exports = ProductDaoFile;

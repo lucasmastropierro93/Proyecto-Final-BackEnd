@@ -5,7 +5,6 @@ const { createHash, isValidPassword } = require("../utils/bcryptHash");
 
 const { userService, cartService } = require("../service/service");
 
-
 class SessionController {
   login = async (req, res) => {
     let { email, password } = req.body;
@@ -60,12 +59,27 @@ class SessionController {
   register = async (req, res) => {
     const { username, first_name, last_name, email, date_of_birth, password } =
       req.body;
-    const existUser = await userService.getUserByEmail( email );
-    if (existUser) return res.send({ status: "error", message: "el email ya existe" });
 
-    const newCart = {products:[]}
-    const cart = await cartService.createCart(newCart)
-    let role = userModel.schema.path('role').default()
+    if (!username.trim()) {
+      return res.send({ message: "El username es requerido" });
+    }
+    if (!email) {
+      return res.send({ message: "el email es requerido" });
+    }
+    if (!password || password.length < 6) {
+      return res.send({
+        message: "la contraseña debe tener 6 o mas caracteres",
+      });
+    }
+
+    const existUser = await userService.getUserByEmail(email);
+    if (existUser) {
+      return res.send({ status: "error", message: "el email ya existe" });
+    }
+
+    const newCart = { products: [] };
+    const cart = await cartService.createCart(newCart);
+    let role = userModel.schema.path("role").default();
     const newUser = {
       username,
       first_name,
@@ -107,27 +121,27 @@ class SessionController {
   };
   restorePass = async (req, res) => {
     const { email, password } = req.body;
-  
+
     // Encontrar el usuario por correo electrónico
     const userDB = await userModel.findOne({ email });
-  
+
     if (!userDB) {
       // Si el usuario no existe, redireccionar a una página de error
       return res
         .status(401)
         .send({ status: "error", message: "El usuario no existe" });
     }
-  
+
     //Hasear Actualizar la contraseña del usuario
     userDB.password = createHash(password);
     await userDB.save();
-  
+
     // Redireccionar al usuario a la página de login
     res.status(200).json({
       status: "success",
       message: "Contraseña actualizada correctamente",
     });
-  }
+  };
 }
 
 module.exports = new SessionController();

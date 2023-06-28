@@ -3,21 +3,21 @@ const { cartService } = require("../service/service");
 
 class CartController {
 
-    cartGet = async(req, res) => {
+    getCarts = async(req, res) => {
         try {
             const cart =  await cartService.getCarts()
-        const limit = req.query.limit
-        if(!limit) return res.send(cart)
-        res.send(prod.slice(0,limit))
+        
+        
+        res.status(201).send({status: success, payload: cart})
         } catch (error) {
-            console.log("error en get");
+            console.log("error en get cart");
         }
         
     }
-    cartGetById = async(req, res) => {
+    getCartById = async(req, res) => {
         try {
             const {cid} = req.params
-            const cart =  await cartService.getCartstById(cid)
+            const cart =  await cartService.getCartById(cid)
             if(!cart) return res.send({error: 'No se encuentra el carrito'})
             res.send(cart)
         } catch (error) {
@@ -25,7 +25,7 @@ class CartController {
         }
        
     }
-    cartPost = async(req, res) => {
+    createCart = async(req, res) => {
         try {
             const newCart = {products:[]}
             await cartService.createCart(newCart)
@@ -35,7 +35,7 @@ class CartController {
         }
       
     }
-    cartPostByPid = async(req, res) => {
+    addToCart = async(req, res) => {
         try {
             const {cid} = req.params
             const {pid} = req.params
@@ -51,7 +51,7 @@ class CartController {
         }
       
     }
-    cartPutById = async(req, res)=>{
+    modifyCart = async(req, res)=>{
         try{
             const { cid } = req.params
             const {newCart} = req.body
@@ -64,7 +64,7 @@ class CartController {
             console.log(err)
         }
     }
-    cartPutByPid = async(req, res)=>{
+    modifyProductFromCart = async(req, res)=>{
         try{
             const {cid} = req.params
             const {pid} = req.params
@@ -78,7 +78,7 @@ class CartController {
             console.log(err)
         }
     }
-    cartDeleteByPid = async(req, res) =>{
+    deleteProductFromCart = async(req, res) =>{
         try {
             const {cid} = req.params
             const {pid} = req.params
@@ -89,7 +89,7 @@ class CartController {
         }
         
     }
-    cartClean = async(req, res) =>{
+    emptyCart = async(req, res) =>{
         try {
             const {cid} = req.params
         let result = await cartService.emptyCart(cid)
@@ -99,7 +99,7 @@ class CartController {
         }
         
     }
-    cartDelete = async(req, res) =>{
+    deleteCarts = async(req, res) =>{
         try {
             const {cid} = req.params
         let result = await cartService.deleteCarts(cid)
@@ -111,4 +111,4 @@ class CartController {
     }
 }
 
-module.exports = new CartController
+module.exports = new CartController ()

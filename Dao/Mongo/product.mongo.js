@@ -3,44 +3,44 @@ const { productModel } = require("./models/product.model")
 
 
 
-class ProductManagerMongo {
+class ProductDaoMongo {
     constructor(){
-
+            this.productModel = productModel
     }
     async getProducts(){
         try {
-            return await productModel.find({}).lean()
+            return await this.productModel.find({}).lean()
         } catch (error) {
             console.log("error en getproducts");
         }
     }
     async getProductById(pid){
         try {
-            return await productModel.findOne({_id: pid})
+            return await this.productModel.findOne({_id: pid})
         } catch (error) {
             console.log("error en getproductsbyid");
         }
     }
-    async addProducts(newProduct){
+    async createProduct(newProduct){
         try {
-            return await productModel.create(newProduct)
+            return await this.productModel.create(newProduct)
         } catch (error) {
             console.log("error en addproducts");
         }
     }
     async updateProduct(pid, obj){
         try {
-            return await productModel.updateOne({_id: pid}, obj)
+            return await this.productModel.updateOne({_id: pid}, obj)
         } catch (error) {
            console.log("error en updateProduct");
         }
     }
     async deleteProduct(pid){
         try {
-            return await productModel.deleteOne({_id: pid})
+            return await this.productModel.deleteOne({_id: pid})
         } catch (error) {
             console.log("error en deleteProduct");
         }
     }
 }
-module.exports = ProductManagerMongo
+module.exports = ProductDaoMongo

@@ -1,31 +1,34 @@
 const { cartModel } = require("./models/carts.model");
 
-class CartManagerMongo {
+class CartDaoMongo {
+constructor(){
+  this.cartModel = cartModel
+}
   async getCarts() {
     try {
-      return await cartModel.find({});
+      return await this.cartModel.find({});
     } catch (err) {
       return new Error(err);
     }
   }
 
-  async getCartstById(cid) {
+  async getCartById(cid) {
     try {
-      return await cartModel.findOne({ _id: cid }).lean();
+      return await this.cartModel.findOne({ _id: cid }).lean();
     } catch (error) {
       return new Error(error);
     }
   }
   async createCart(newCart) {
     try {
-      return await cartModel.create(newCart);
+      return await this.cartModel.create(newCart);
     } catch (err) {
       return new Error(err);
     }
   }
   async addToCart(cid, pid, quantity) {
     try {
-      const respUpdate = await cartModel.findOneAndUpdate(
+      const respUpdate = await this.cartModel.findOneAndUpdate(
         { _id: cid, "products.product": pid },
         { $inc: { "products.$.quantity": quantity } },
         { new: true }
@@ -34,7 +37,7 @@ class CartManagerMongo {
       if(respUpdate){
         return respUpdate
     }
-    return await cartModel.findOneAndUpdate(
+    return await this.cartModel.findOneAndUpdate(
         {_id: cid},
         { $push: { products: { product: pid, quantity} } },
         {new:true, upsert:true}
@@ -47,7 +50,7 @@ class CartManagerMongo {
 
   async deleteProductFromCart   (cid, pid) {
     try {
-      return await cartModel.findOneAndUpdate(
+      return await this.cartModel.findOneAndUpdate(
         { _id: cid },
         { $pull: { products: { product: pid } } },
         { new: true }
@@ -58,7 +61,7 @@ class CartManagerMongo {
   }
   async emptyCart(cid) {
     try {
-      return await cartModel.findOneAndUpdate(
+      return await this.cartModel.findOneAndUpdate(
         { _id: cid },
         { $set: { products: [] } },
         { new: true }
@@ -69,14 +72,14 @@ class CartManagerMongo {
   }
   async deleteCarts(cid) {
     try {
-      return await cartModel.deleteOne({ _id: cid });
+      return await this.cartModel.deleteOne({ _id: cid });
     } catch (error) {
       return new Error(error);
     }
   }
   async modifyCart(cid, newCart){
     try{
-        return await cartModel.findOneAndUpdate(
+        return await this.cartModel.findOneAndUpdate(
             {_id:cid},
             {$set: {products: newCart}},
             {new:true}
@@ -87,7 +90,7 @@ class CartManagerMongo {
 }
 async modifyProductFromCart(cid, pid, quantity){
     try{
-        return await cartModel.findOneAndUpdate(
+        return await this.cartModel.findOneAndUpdate(
             {_id: cid,"products.product": pid},
             { $set: { "products.$.quantity": quantity } },
             {new:true}
@@ -98,4 +101,4 @@ async modifyProductFromCart(cid, pid, quantity){
 }
 }
 
-module.exports = CartManagerMongo;
+module.exports = CartDaoMongo;

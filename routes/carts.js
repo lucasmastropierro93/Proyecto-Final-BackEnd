@@ -10,23 +10,23 @@ const cartManager = require("../Dao/Mongo/cart.mongo")
 const producto = require("../Dao/Mongo/product.mongo")
 const cartControllers = require('../controllers/cart.controllers')
 //GET
-routerCarts.get('/', cartControllers.cartGet)
+routerCarts.get('/', cartControllers.getCarts)
 
-routerCarts.get('/:cid', cartControllers.cartGetById)
+routerCarts.get('/:cid', cartControllers.getCartById)
 
-routerCarts.post('/', cartControllers.cartPost)
+routerCarts.post('/', cartControllers.createCart)
 
-routerCarts.post('/:cid/product/:pid', cartControllers.cartPostByPid)
+routerCarts.post('/:cid/product/:pid', cartControllers.addToCart)
 
-routerCarts.put('/:cid',cartControllers.cartPutById )
+routerCarts.put('/:cid',cartControllers.modifyCart )
 
 
-routerCarts.put('/:cid/product/:pid', cartControllers.cartPutByPid)
+routerCarts.put('/:cid/product/:pid', cartControllers.modifyProductFromCart)
 
-routerCarts.delete('/:cid/product/:pid', cartControllers.cartDeleteByPid)
+routerCarts.delete('/:cid/product/:pid', cartControllers.deleteProductFromCart)
 
-routerCarts.delete('/:cid', cartControllers.cartClean)
+routerCarts.delete('/:cid', cartControllers.emptyCart)
 
-routerCarts.delete('/carrito/:cid', cartControllers.cartDelete)
+routerCarts.delete('/carrito/:cid', cartControllers.deleteCarts)
 
 module.exports = routerCarts

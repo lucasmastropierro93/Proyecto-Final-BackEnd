@@ -4,7 +4,7 @@ const { productService } = require("../service/service");
 
 class ProductController {
 
-    productGet = async (req, res) => {
+    getProducts = async (req, res) => {
         try {
           const { limit = 10 } = req.query;
           const { page = 1 } = req.query;
@@ -23,22 +23,13 @@ class ProductController {
             prevPage,
             nextPage,
           });
-      
-          /*
-          const products = await productManager.getProducts();
-          const limit = req.query.limit;
-        // http://localhost:8080/api/productos/?limit=4 ESTO ES PARA PONER LIMITE
-      
-      
-          limit
-            ? res.send({ status: "succes", products: products.slice(0, limit) })
-            : res.send({ status: "success", products: products });
-           */
+    
+         
         } catch (error) {
           console.log(error);
         }
       }
-      productGetById =  async (req, res) => {
+      getProductById =  async (req, res) => {
         try {
           const { pid } = req.params;
           const product = await productService.getProductById(pid);
@@ -49,10 +40,10 @@ class ProductController {
           console.log(error);
         }
       }
-      productPost = async (req, res) => {
+      createProduct = async (req, res) => {
         try {
           let productSend = req.body;
-          const addedProduct = await productService.addProducts(productSend);
+          const addedProduct = await productService.createProduct(productSend);
       
           Object.keys(addedProduct).length === 0
           ? res.status(400).send({ error: "No se pudo agregar el producto" })
@@ -61,7 +52,7 @@ class ProductController {
           return { status: "error", error };
         }
       }
-      productPutById =  async (req, res) => {
+      updateProduct =  async (req, res) => {
         try {
           const { pid } = req.params;
           const  prod  = req.body;
@@ -73,7 +64,7 @@ class ProductController {
           console.log(err);
         }
       }
-      productDeleteById = async (req, res) => {
+      deleteProduct = async (req, res) => {
         try {
           const { pid } = req.params;
         const deletedProduct = await productService.deleteProduct(pid)
@@ -87,4 +78,4 @@ class ProductController {
       }
 }
 
-module.exports = new ProductController
+module.exports = new ProductController()

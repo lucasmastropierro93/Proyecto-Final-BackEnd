@@ -11,7 +11,7 @@ const { uploader } = require("./utils/utils");
 const viewsRouter = require("./routes/views");
 const logger = require("morgan")
 const app = express();
-const ProductManager = require("./Dao/FileSystem/ProductManager");
+const ProductManager = require("./Dao/FileSystem/ProductDaoFile");
 
 const chatmanager = require("./Dao/Mongo/chat.mongo")
 const ObjectId = mongoose.Types.ObjectId
@@ -117,6 +117,9 @@ app.use((err, req, res, next) => {
   res.status(500).send("Algo salio mal");
 });
 
+// ---------------------------------MONGOOSE----------------------------------------------------------------
+
+objectConfig.connectDB()
 //-----------------------REALTIMEPRODUCT----------------------------------//
 io.on('connection', socket=>{
 	console.log("cliente conectado en tiempo real a los productos")
@@ -145,7 +148,7 @@ io.on('connection', socket=>{
 	
 	socket.on('addProducts', async (data) => {
 		try {
-			await productService.addProducts(data);
+			await productService.createProduct(data);
 			const newData = await productService.getProducts()
 			return socket.emit('productAdded', newData)
 		} catch (error) {
@@ -179,6 +182,3 @@ io.on('connection', socket => {
 
 
   
-// ---------------------------------MONGOOSE----------------------------------------------------------------
-
-objectConfig.connectDB()

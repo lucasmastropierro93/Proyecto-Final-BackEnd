@@ -50,7 +50,7 @@ router.get('/carts/:cid', async(req,res)=>{
 
   try{
       const {cid} = req.params
-      const cart = await cartService.getCartstById(cid)
+      const cart = await cartService.getCartById(cid)
       if(!cart){
           res.status(404).send({ message: `El carrito con ID ${cid} no existe` })
       }else{

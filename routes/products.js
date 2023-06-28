@@ -6,10 +6,10 @@ const productController = require("../controllers/product.controllers");
 const router = Router();
 
 //const productManager = new ProductManager("./data.json");
-router.get("/", productController.productGet);
-router.get("/:pid", productController.productGetById);
-router.post("/", productController.productPost);
-router.put("/:pid", productController.productPutById);
-router.delete("/:pid", productController.productDeleteById);
+router.get("/", productController.getProducts);
+router.get("/:pid", productController.getProductById);
+router.post("/", productController.createProduct);
+router.put("/:pid", productController.updateProduct);
+router.delete("/:pid", productController.deleteProduct);
 
 module.exports = router;
