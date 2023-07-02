@@ -7,7 +7,7 @@ class CartRepository {
         return this.dao.getCarts()
     }
     getCartById(cid){
-        return this.dao.getCartById()
+        return this.dao.getCartById(cid)
     }
     createCart(newCart){
         return this.dao.createCart(newCart)
@@ -29,6 +29,9 @@ class CartRepository {
     }
     deleteCarts(cid){
         return this.dao.deleteCarts(cid)
+    }
+    generateTicket(ticketData){
+        return this.dao.generateTicket(ticketData)
     }
 }
 module.exports = CartRepository

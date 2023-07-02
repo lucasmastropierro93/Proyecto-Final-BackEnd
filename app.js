@@ -100,7 +100,7 @@ passport.use(passport.initialize())
 passport.use(passport.session())
 
 //*************************************************************************************************** */
-app.use(routerIndex)
+
 
 //--------------------------MULTER------------------------------
 app.post("/single", uploader.single("myfile"), (req, res) => {
@@ -182,3 +182,4 @@ io.on('connection', socket => {
 
 
   
+app.use(routerIndex)

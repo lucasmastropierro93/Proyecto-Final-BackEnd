@@ -16,6 +16,8 @@ let url =
 
 module.exports = {
   jwt_secret_key: 'palabrasecreta',
+  gmail_user_app: process.env.GMAIL_USER,
+  gmail_pass_app: process.env.GMAIL_PASS,
   connectDB: async () => {
     try {
       

@@ -1,6 +1,7 @@
 const {Router} = require('express')
 const { auth } = require('../middlewares/auth')
-
+const configServer = require('../config/objectConfig')
+const nodemailer = require('nodemailer')
 const router = Router()
 
 
@@ -37,10 +38,33 @@ router.post("/getcookieuser",(req,res)=>{
 
     res.cookie(username, email, {maxAge: 1000000,signed: true}).send({mensaje: "seteado"})
 })
+/*
+const transport = nodemailer.createTransport({
+    service: 'gmail',
+    port:587,
+    auth:{
+        user: configServer.gmail_user_app,
+        pass: configServer.gmail_pass_app
+    }
+})
+router.get('/mail', async (req,res)=>{
+    let result =  await transport.sendMail({
+        from: 'COMPRA REALIZADA<lucasmastro93@gmail.com>',
+        to: 'lucasmastro93@gmail.com', //${body.purchaser}
+        subject:'Gracias por realizar la compra',
+        html:`<div>
+        <h1>Tu compra ha sido completada con exito</h1>
+        <p>Codigo:  </p>
+        <p>Total:$ </p>
+        </div>`
+    })
+    res.send('Email enviado')
+})
 
-
-
-
+router.get('/sms', async (req,res)=>{
+    res.send('Email enviado')
+})
+*/
 //////////////////////////////////////////////////SESIONES/////////////////////////////////////
 
 

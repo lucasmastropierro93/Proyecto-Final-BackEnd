@@ -1,16 +1,17 @@
 const { Session } = require("express-session");
-const { cartService } = require("../service/service");
+const { cartService, productService } = require("../service/service");
+const { v4: uuidv4 } = require('uuid');
 
 class CartController {
 
     getCarts = async(req, res) => {
         try {
-            const cart =  await cartService.getCarts()
+            const carts =  await cartService.getCarts()
         
         
-        res.status(201).send({status: success, payload: cart})
+        res.send(carts)
         } catch (error) {
-            console.log("error en get cart");
+            console.log("error en get carritosdas");
         }
         
     }
@@ -18,8 +19,10 @@ class CartController {
         try {
             const {cid} = req.params
             const cart =  await cartService.getCartById(cid)
-            if(!cart) return res.send({error: 'No se encuentra el carrito'})
-            res.send(cart)
+            if(!cart) {
+                 res.send({error: 'No se encuentra el carrito'})
+            }
+            res.send({status: "success", payload: cart})
         } catch (error) {
             console.log("error en get cid");
         }
@@ -108,6 +111,58 @@ class CartController {
             console.log("error en delete");
         }
         
+    }
+    generateTicket = async(req, res) =>{
+        try {
+            const { cid } = req.params 
+            const cart = await cartService.getCartById(cid)
+            const productsNstock = [];
+
+            for (const item of cart.products) {
+                let stock = item.product.stock;
+                let pid = item.product._id
+                if (stock >= item.quantity) {
+                    item.product.stock -= item.quantity;
+                    await productService.updateProduct(pid, item.product)
+                } else {
+                    productsNstock.push(item);
+                }
+            }
+
+            const purchasedProducts = cart.products.filter(item =>
+                !productsNstock.some(p => p.product._id === item.product._id));
+
+            if (purchasedProducts.length > 0) {
+                const ticket = {
+                    code: uuidv4(),
+                    purchase_datetime: new Date(),
+                    amount: purchasedProducts.reduce((total, item) => total + (item.quantity * item.product.price), 0),
+                    purchaser: req.user.email
+                };
+        
+                const createdTicket = await cartService.generateTicket(ticket);
+        
+                cart.products = productsNstock;
+                await cartService.modifyCart(cid, productsNstock );
+
+                if(productsNstock.length > 0){
+                    await sendMail(ticket)
+                    res.status(201).send({ message: 'Compra realizada parcialmente,existen productos sin stock suficiente', ticket: createdTicket });
+                }else{
+                    await sendMail(ticket)
+                    res.status(201).send({ message: 'Compra realizada exitosamente', ticket: createdTicket });
+                }
+        
+            } else {
+                const productsWithoutStockIds = productsNstock.map(item => item.product._id);
+                res.status(200).send({message: 'La compra no se pudo completar', payload: productsWithoutStockIds});
+            }
+
+
+
+        } catch (error) {
+            console.log("error en generar ticket");
+        }
     }
 }
 
