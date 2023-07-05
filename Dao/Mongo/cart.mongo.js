@@ -104,7 +104,7 @@ async generateTicket(ticketData){
   try {
       return await TicketModel.create(ticketData);
   } catch (error) {
-      console.log(error)
+      console.log("error en crear ticket")
   }
 }
 }

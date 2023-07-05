@@ -8,8 +8,8 @@ const CartRepository = require("../repositories/cart.repository")
 
 
 const userService = new UserManagerMongo()
-const productService = new ProductRepository(new ProductDao)
-const cartService = new CartRepository(new CartDao)
+const productService = new ProductRepository(new ProductDao())
+const cartService = new CartRepository(new CartDao())
 module.exports= {
     userService,
     productService,

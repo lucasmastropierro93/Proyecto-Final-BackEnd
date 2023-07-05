@@ -13,9 +13,9 @@ routerCarts.get('/:cid', cartControllers.getCartById)
 
 routerCarts.post('/', cartControllers.createCart)
 
-routerCarts.post('/:cid/product/:pid', passportCall('jwt', {session:false}), authorization('user'), cartControllers.addToCart)
+routerCarts.post('/:cid/product/:pid', cartControllers.addToCart)
 
-routerCarts.post('/:cid/purchase', cartControllers.generateTicket)
+routerCarts.get('/:cid/purchase', cartControllers.generateTicket)
 
 routerCarts.put('/:cid',cartControllers.modifyCart )
 
