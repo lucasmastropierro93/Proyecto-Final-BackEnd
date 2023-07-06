@@ -1,6 +1,6 @@
 // IMPORTSSSS
 const mongoose = require('mongoose')
-const objectConfig = require("../src/config/objectConfig")
+const objectConfig = require("./config/objectConfig")
 const routerIndex = require("./routes/index")
 const cookieParser = require("cookie-parser");
 const express = require("express");
@@ -60,7 +60,7 @@ app.use('/static', express.static(__dirname+'/public'))
   saveUninitialized: true
 
 }))*/
-app.use(cookieParser('palabrasecreta'));
+app.use(cookieParser(objectConfig.jwt_secret_key));
 /*
               CON FILE STORE
 const fileStore = FileStore(session)
@@ -87,7 +87,7 @@ app.use(session({
     ttl: 100000*60,
     
   }),
-  secret: "palabrasecreta",
+  secret: objectConfig.jwt_secret_key,
   resave: false,
   saveUninitialized: false
 

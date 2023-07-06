@@ -2,7 +2,7 @@ const {Router}= require ('express')
 const routerCarts = Router()
 
 
-
+const passport = require("passport");
 const cartControllers = require('../controllers/cart.controllers')
 const { passportCall } = require('../config/passportCall')
 const { authorization } = require('../config/authorizationJwtRole')
@@ -13,9 +13,9 @@ routerCarts.get('/:cid', cartControllers.getCartById)
 
 routerCarts.post('/', cartControllers.createCart)
 
-routerCarts.post('/:cid/product/:pid', cartControllers.addToCart)
+routerCarts.post('/:cid/product/:pid', passportCall('jwt',{session: false}), authorization('user'),cartControllers.addToCart)
 
-routerCarts.get('/:cid/purchase', cartControllers.generateTicket)
+routerCarts.post('/:cid/purchase', passportCall('jwt',{session: false}),authorization('user'),cartControllers.generateTicket)
 
 routerCarts.put('/:cid',cartControllers.modifyCart )
 

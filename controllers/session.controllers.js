@@ -115,6 +115,7 @@ class SessionController {
       if (err) {
         return res.send({ status: "error", error: err });
       } else {
+        res.clearCookie('coderCookieToken')
         res.redirect("/login");
       }
     });
