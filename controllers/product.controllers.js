@@ -55,16 +55,32 @@ class ProductController {
         }
       }
       
-      createProduct = async (req, res) => {
+      createProduct = async (req, res, next) => {
         try {
-          let productSend = req.body;
+          const {title, description, price, code, stock, category, thumbnail} = req.body
+          if(!title || !description || !price || !code || !stock || !category){
+            CustomError.createError({
+                name: 'Product creation error',
+                cause: createProductErrorInfo({
+                    title, 
+                    description, 
+                    price, 
+                    code, 
+                    stock, 
+                    category
+                }),
+                message: 'Error trying to create product',
+                code: Error.INVALID_TYPE_ERROR
+            })
+        }
+          let productSend = ({title, description, price, code, stock, category, thumbnail}) 
           const addedProduct = await productService.createProduct(productSend);
       
           Object.keys(addedProduct).length === 0
           ? res.status(400).send({ error: "No se pudo agregar el producto" })
           : res.status(201).send({status:'producto agregado', payload: addedProduct})
         } catch (error) {
-          return { status: "error", error };
+          next(error)
         }
       }
       updateProduct =  async (req, res) => {

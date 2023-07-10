@@ -34,6 +34,7 @@ const { initPassortGithub } = require("./config/passportConfig");
 const { initPassport} = require("./config/passport-jwt-config")
 const passport = require("passport");
 const { productService } = require('./service/service');
+const { errorHandler } = require('./middlewares/error.middleware');
 
 const httpServer = app.listen(8080, () => {
   console.log("Running on port 8080");
@@ -183,3 +184,4 @@ io.on('connection', socket => {
 
   
 app.use(routerIndex)
+app.use(errorHandler)
