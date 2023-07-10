@@ -6,6 +6,8 @@ const productController = require("../controllers/product.controllers");
 const router = Router();
 
 //const productManager = new ProductManager("./data.json");
+
+router.get("/mockingproducts", productController.generateProductsMock)
 router.get("/", productController.getProducts);
 router.get("/:pid", productController.getProductById);
 router.post("/", productController.createProduct);

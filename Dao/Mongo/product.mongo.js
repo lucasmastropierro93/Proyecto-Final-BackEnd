@@ -18,7 +18,7 @@ class ProductDaoMongo {
         try {
             return await this.productModel.findOne({_id: pid})
         } catch (error) {
-            console.log("error en getproductsbyid");
+            console.log("error en get products by   id");
         }
     }
     async createProduct(newProduct){

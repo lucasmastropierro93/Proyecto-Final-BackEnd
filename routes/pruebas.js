@@ -2,8 +2,22 @@ const {Router} = require('express')
 const { auth } = require('../middlewares/auth')
 const configServer = require('../config/objectConfig')
 const nodemailer = require('nodemailer')
+const { generateProducts } = require('../utils/generateProducts')
 const router = Router()
 
+
+router.get("/pruebamock", (req, res)=>{
+    try {
+        let  products = []
+        for (let i = 0; i < 80; i++) {
+          products.push(generateProducts())
+          
+        }
+        res.send({status: "success", message: "productos mock creados", payload: products})
+    } catch (error) {
+        console.log("error");
+    }
+})
 
 router.get("/setCookie", (req,res)=>{
     res.cookie('CoderCookie', 'Esta es una cookie muy poderosa', {maxAge: 10000000}).send('cookie setada')

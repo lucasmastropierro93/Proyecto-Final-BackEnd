@@ -1,9 +1,21 @@
 const { Session } = require("express-session");
 const { productModel } = require("../Dao/Mongo/models/product.model");
 const { productService } = require("../service/service");
+const { generateProducts } = require("../utils/generateProducts");
 
 class ProductController {
-
+    generateProductsMock = async (req,res) => {
+      try {
+        let  products = []
+        for (let i = 0; i < 80; i++) {
+          products.push(generateProducts())
+          
+        }
+        res.send({status: "success", message: "productos mock creados", payload: products})
+      } catch (error) {
+        console.log("error en generar productos mock");
+      }
+    }
     getProducts = async (req, res) => {
         try {
           const { limit = 10 } = req.query;
@@ -29,17 +41,20 @@ class ProductController {
           console.log(error);
         }
       }
+      
       getProductById =  async (req, res) => {
         try {
           const { pid } = req.params;
           const product = await productService.getProductById(pid);
-          Object.keys(product).length === 0 // si el obj esta vacio
-            ? res.status(404).send({ error: "No existe el producto" })
-            : res.send(product);
+          !product
+            ?res.status(404).send({ error: 'No existe el producto' })
+            :res.send(product);
+            
         } catch (error) {
           console.log(error);
         }
       }
+      
       createProduct = async (req, res) => {
         try {
           let productSend = req.body;
@@ -76,6 +91,7 @@ class ProductController {
         }
         
       }
+    
 }
 
 module.exports = new ProductController()

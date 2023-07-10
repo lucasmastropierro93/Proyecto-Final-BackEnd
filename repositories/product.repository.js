@@ -20,6 +20,7 @@ class ProductRepository{
     updateProduct(pid, obj){
         return this.dao.updateProduct(pid, obj)
     }
+    
 }
 
 module.exports = ProductRepository
