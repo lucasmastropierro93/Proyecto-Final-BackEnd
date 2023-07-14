@@ -12,7 +12,7 @@ const viewsRouter = require("./routes/views");
 const logger = require("morgan")
 const app = express();
 const ProductManager = require("./Dao/FileSystem/ProductDaoFile");
-
+const PORT = process.env.PORT
 const chatmanager = require("./Dao/Mongo/chat.mongo")
 const ObjectId = mongoose.Types.ObjectId
 
@@ -35,9 +35,10 @@ const { initPassport} = require("./config/passport-jwt-config")
 const passport = require("passport");
 const { productService } = require('./service/service');
 const { errorHandler } = require('./middlewares/error.middleware');
+const { addLogger } = require('./utils/logger');
 
-const httpServer = app.listen(8080, () => {
-  console.log("Running on port 8080");
+const httpServer = app.listen(PORT, () => {
+  console.log(`Escuchando en el puerto ${PORT}`);
 });
 
 const io = new Server(httpServer);
@@ -181,7 +182,7 @@ io.on('connection', socket => {
 
 })
 
-
+app.use(addLogger)
   
 app.use(routerIndex)
 app.use(errorHandler)

@@ -5,7 +5,18 @@ const nodemailer = require('nodemailer')
 const { generateProducts } = require('../utils/generateProducts')
 const router = Router()
 
+router.get('/loggerTest', async(req, res) =>{
+    // req.logger.fatal('alerta fatal')
+    // req.logger.error('alerta error')
+     req.logger.warning('alerta warning')
+    // req.logger.info('alerta info')
+     //req.logger.http('alerta http')
+    //logger.debug('alerta debug')
+     //req.logger.fatal('fatal error')
+    
+    res.send({message: 'Probando de logger'})
 
+})
 router.get("/pruebamock", (req, res)=>{
     try {
         let  products = []
