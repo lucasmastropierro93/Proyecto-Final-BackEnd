@@ -1,8 +1,8 @@
 const { userModel } = require("./models/user.model");
 class UserManagerMongo {
-  async getUsers() {
+  async getUser(email) {
     try {
-      return await userModel.find({});
+      return await userModel.findOne(email);
     } catch (error) {
       console.log("error en getusers");
     }
@@ -21,7 +21,7 @@ class UserManagerMongo {
       console.log("error en getuserbyemail");
     }
   }
-  async addUser(newUser) {
+  async createUser(newUser) {
     try {
         return await userModel.create(newUser)
     } catch (error) {

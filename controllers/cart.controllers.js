@@ -3,6 +3,7 @@ const { cartService, productService } = require("../service/service");
 const { v4: uuidv4 } = require("uuid");
 const jwt = require("jsonwebtoken");
 const objectConfig = require("../config/objectConfig");
+const { sendMail } = require("../utils/nodemailer");
 
 class CartController {
   getCarts = async (req, res) => {
@@ -163,6 +164,7 @@ class CartController {
               if(productsUnavailable.length > 0){
                   return res.send({status:"success", message:"compra realizada parcialmente, existen productos sin stock", ticket: createdTicket,productsUnavailable})
               }else{
+                  await sendMail(ticket)
                   return res.send({status:"succes", message:"compra realizada exitosamente", ticket: createdTicket})
               }
                

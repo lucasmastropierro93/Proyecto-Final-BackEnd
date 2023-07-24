@@ -11,7 +11,11 @@ const sessionControllers = require("../controllers/session.controllers");
 
 const router = Router();
 
+router.post('/forgotPassword', sessionControllers.forgotpassword)
 
+router.post('/resetPassword', sessionControllers.resetPassword)
+
+router.get('/premium/:uid', sessionControllers.changeRole)
 
 router.get("/privada", auth, (req, res) => {
   res.send("Todo lo que esta acá solo lo puede ver un admin loagueado");
@@ -34,7 +38,6 @@ router.get(
   }
 );
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 router.post("/login", sessionControllers.login);
 

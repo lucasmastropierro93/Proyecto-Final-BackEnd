@@ -6,7 +6,18 @@ const generateToken = (user) => {
     const token = jwt.sign(user, configServer.jwt_secret_key , {expiresIn: '1d'})
     return token
 } 
-
+const generateResetToken = (user) => {
+    const token = jwt.sign(user, configServer.jwt_secret_key , {expiresIn: '1h'})
+    return token
+}
+const verifyResetToken = (token) => {
+    try {
+        return jwt.verify(token, configServer.jwt_secret_key);
+    } catch (error) {
+        return null
+    }
+    
+}
 const authToken = (req, res, next) => {
     const authHeader = req.headers['authorization']
     
@@ -29,5 +40,7 @@ const authToken = (req, res, next) => {
 
 module.exports = {
     generateToken,
-    authToken
+    authToken,
+    verifyResetToken,
+    generateResetToken
 }

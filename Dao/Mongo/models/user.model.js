@@ -31,12 +31,13 @@ const userSchema = new Schema({
   },
   role: {
     type: String,
+    enum: ["user", "admin", "premium"],
     default: "user",
   },
   cart: {
     type: Schema.Types.ObjectId,
-    ref: 'carts',
-  }
+    ref: "carts",
+  },
 });
 
 //userSchema.plugin(mongoosePaginate);

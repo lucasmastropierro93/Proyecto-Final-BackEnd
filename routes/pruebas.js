@@ -68,10 +68,19 @@ const transport = nodemailer.createTransport({
     service: 'gmail',
     port:587,
     auth:{
-        user: configServer.gmail_user_app,
-        pass: configServer.gmail_pass_app
+        user: 'lucasmastro93@gmail.com',
+        pass: 'xdmkyidhvohwkdga'
     }
 })
+*/
+var transport = nodemailer.createTransport({
+    host: "sandbox.smtp.mailtrap.io",
+    port: 2525,
+    auth: {
+      user: "fa407663d8feb2",
+      pass: "2d6d33b350aebe"
+    }
+  });
 router.get('/mail', async (req,res)=>{
     let result =  await transport.sendMail({
         from: 'COMPRA REALIZADA<lucasmastro93@gmail.com>',
@@ -89,7 +98,7 @@ router.get('/mail', async (req,res)=>{
 router.get('/sms', async (req,res)=>{
     res.send('Email enviado')
 })
-*/
+
 //////////////////////////////////////////////////SESIONES/////////////////////////////////////
 
 
