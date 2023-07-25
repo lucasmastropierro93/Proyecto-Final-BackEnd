@@ -58,6 +58,8 @@ class ProductController {
       createProduct = async (req, res, next) => {
         try {
           const {title, description, price, code, stock, category, thumbnail} = req.body
+
+          const user = req.session.user
           if(!title || !description || !price || !code || !stock || !category){
             CustomError.createError({
                 name: 'Product creation error',
@@ -73,7 +75,12 @@ class ProductController {
                 code: Error.INVALID_TYPE_ERROR
             })
         }
-          let productSend = ({title, description, price, code, stock, category, thumbnail}) 
+
+        let owner = 'admin'
+        if(user && user.role === 'premium'){
+            owner = user.email
+        }
+          let productSend = ({title, description, price, code, stock, category, thumbnail, owner}) 
           const addedProduct = await productService.createProduct(productSend);
       
           Object.keys(addedProduct).length === 0

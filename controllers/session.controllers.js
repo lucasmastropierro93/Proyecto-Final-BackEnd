@@ -73,14 +73,19 @@ class SessionController {
       });
     }
 
-    const existUser = await userService.getUserByEmail(email);
+    const existUser = await userService.getUser({email});
     if (existUser) {
       return res.send({ status: "error", message: "el email ya existe" });
     }
 
     const newCart = { products: [] };
     const cart = await cartService.createCart(newCart);
-    let role = userModel.schema.path("role").default();
+    let role = 'user'
+    
+    if(email === 'premium@premium.com'){
+      role = "premium"
+    }
+
     const newUser = {
       username,
       first_name,
@@ -93,7 +98,7 @@ class SessionController {
       cart: cart._id,
     };
 
-    await userService.addUser(newUser);
+    await userService.createUser(newUser);
     const accessToken = generateToken({
       first_name: newUser.first_name,
       last_name: newUser.last_name,
