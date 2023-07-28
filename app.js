@@ -9,6 +9,10 @@ const FileStore = require("session-file-store")
 const {create} = require("connect-mongo")
 const { uploader } = require("./utils/utils");
 const viewsRouter = require("./routes/views");
+// swagger
+const swaggerJsDoc = require('swagger-jsdoc')
+const swaggerUiExpress = require('swagger-ui-express')
+
 const logger = require("morgan")
 const app = express();
 const ProductManager = require("./Dao/FileSystem/ProductDaoFile");
@@ -181,6 +185,26 @@ io.on('connection', socket => {
 })
 
 })
+
+
+////////////SWAGGER///////////////////////////////////////////////////////
+const swaggerOptions = {
+  definition: {
+      openapi: '3.0.1',
+      info: {
+          title: 'Documentación acerca de mis productos y de mis carritos',
+          description: 'Esta es la documentación'
+      }
+  },
+  apis: [`${__dirname}/docs/**/*.yaml`]
+}
+
+const specs = swaggerJsDoc(swaggerOptions)
+
+app.use('/docs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs))
+
+//////////////////////////////////////////////////////////////////////////
+
 
 app.use(addLogger)
   

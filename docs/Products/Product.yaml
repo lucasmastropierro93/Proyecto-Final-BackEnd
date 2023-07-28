@@ -1,0 +1,163 @@
+paths: 
+  /api/productos/:
+    get:
+      summary: Obtiene todos los productos
+      tags: 
+        - Products
+      responses:
+        "200":
+          description: Los Productos fueron obtenidos correctamente
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  $ref: '#components/schemas/Product'
+        "500":
+          description: Error interno del server, usualmente generado por una query defectuosa
+    post:
+      summary: Crea un nuevo producto.
+      tags: 
+        - Products
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema: 
+              $ref: '#components/requestBodies/updateProduct'
+      responses:
+        "201":
+          description: El producto fue creado correctamente
+  /api/productos/{pid}:
+    get:
+      summary: Obtiene un producto por su pid
+      tags: 
+        - Products
+      parameters:
+      - name: pid
+        in: path
+        required: true
+        description: El id del producto a solicitar.
+        schema:
+          $type: String  
+      responses:
+        "200":
+          description: El producto fue obtenido correctamente
+          content:
+            application/json:
+              schema: 
+                $ref: '#components/schemas/Product'
+    put:
+      summary: Se actualiza un producto en base un pid
+      tags:
+        - Products
+      parameters:
+      - name: pid
+        in: path
+        required: true
+        description: El producto id del producto a actualizar
+        schema: 
+          type: string
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema:
+              $ref: '#components/requestBodies/updateProduct'
+    delete:
+      summary: Se borra un producto en base a su pid
+      tags:
+        - Products
+      parameters:
+      - name: pid
+        in: path
+        required: true
+        description: El id del producto a borrar
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#components/requestBodies/updateProduct'    
+components:
+  schemas: 
+    Product: 
+      type: object
+      properties: 
+        _id:
+          type: string
+          description: Id autogenerado por Mongo.
+        title:
+          type: string
+          description: Titulo del producto
+        description:
+          type: string
+          description: La descripcion del producto.
+        thumbnail:
+          type: string
+          description: La imagen del producto.
+        price:
+          type: string
+          description: El precio del producto.
+        stock:
+          type: string
+          description: El stock del producto.
+        category:
+          type: string
+          description: La categoria del producto.  
+        code:
+          type: string
+          description: El codigo del producto. 
+        owner:
+          type: string
+          description: El creador del producto.  
+      example:
+        _id: ObjectId('fasldkf56asdf.asdfa6a54s')
+        title: Iphone 14 pro max
+        description: El mejor iphone que existe en el mercado por ahora
+        thumbnail: sin imagen para mostrar por ahra 
+        price: '222'
+        stock: '333'
+        category: smartphone
+        code: '444'
+        owner: messi
+  requestBodies: 
+    updateProduct:
+      type: object
+      properties: 
+        title:
+          type: string
+          description: Titulo del producto
+        description:
+          type: string
+          description: La descripcion del producto.
+        thumbnail:
+          type: string
+          description: La imagen del producto.
+        price:
+          type: string
+          description: El precio del producto.
+        stock:
+          type: string
+          description: El stock del producto.
+        category:
+          type: string
+          description: La categoria del producto.  
+        code:
+          type: string
+          description: El codigo del producto. 
+        owner:
+          type: string
+          description: El creador del producto.  
+      example:
+        _id: ObjectId('fasldkf56asdf.asdfa6a54s')
+        title: Iphone 14 pro max
+        description: El mejor iphone que existe en el mercado por ahora
+        thumbnail: sin imagen para mostrar por ahra 
+        price: '222'
+        stock: '333'
+        category: smartphone
+        code: '444'
+        owner: messi

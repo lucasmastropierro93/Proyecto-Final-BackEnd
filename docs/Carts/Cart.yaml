@@ -1,0 +1,52 @@
+paths: 
+  /api/carts/:
+    get:
+      summary: Obtiene todos los carritos 
+      tags: 
+        - Carts
+      responses:
+        "200":
+          description: Los Carritos fueron obtenidos correctamente
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  $ref: '#components/schemas/Cart'
+        "500":
+          description: Error interno del server, usualmente generado por una query defectuosa    
+components:
+  schemas: 
+    Cart: 
+      type: array
+      properties: 
+        _id:
+          type: string
+          description: Id autogenerado por Mongo.
+        products: 
+          type: object
+          description: productos que se encuentran en el carrito 
+        quantity:
+          type: string
+          description: cantidad del producto en el carrito 
+      example:
+        _id: ObjectId('fasldkf56asdf.asdfa6a54s')
+        products: Iphone 10 y su descripcion precio codigo, etc
+        quantity: '5'
+  requestBodies: 
+    updateCart:
+      type: object
+      properties: 
+        _id:
+          type: string
+          description: Id autogenerado por Mongo.
+        products: 
+          type: object
+          description: productos que se encuentran en el carrito 
+        quantity:
+          type: string
+          description: cantidad del producto en el carrito  
+      example:
+        _id: ObjectId('fasldkf56asdf.asdfa6a54s')
+        products: Iphone 10 y su descripcion precio codigo, etc
+        quantity: '5'
