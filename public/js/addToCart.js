@@ -8,7 +8,7 @@ function addToCart(cartId, productId) {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ cantidad: quantity })
+        body: JSON.stringify({ quantity: quantity })
       })
         .then(async response => {
           if (response.ok) {

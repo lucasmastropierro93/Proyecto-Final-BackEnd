@@ -46,6 +46,7 @@ class SessionController {
       date_of_birth: userDB.date_of_birth,
       username: userDB.username,
       role: userDB.role,
+      cart: userDB.cart
     });
 
     res
