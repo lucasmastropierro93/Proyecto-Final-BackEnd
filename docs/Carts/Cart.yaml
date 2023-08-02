@@ -14,39 +14,84 @@ paths:
                 items: 
                   $ref: '#components/schemas/Cart'
         "500":
-          description: Error interno del server, usualmente generado por una query defectuosa    
+          description: Error interno del server, usualmente generado por una query defectuosa
+  /api/carts/{cid}:
+    get:
+      summary: Obtiene un carrito por su cid
+      tags:
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        required: true
+        description: El id del carrito a solicitar
+        schema:
+          type: string
+      responses:
+        "200":
+          description: El carrito fue obtenido correctamente
+          content:
+            application/json:
+              schema:
+                $ref: #components/schemas/Cart
+              example:
+                _id: "647f474e711355e8fa4b61c0"
+                products:
+                  product:
+                    _id: "64593704019cf36217eb2bb7"
+                    title: "iphoneta"
+                    description: "Este iphone cuenta con pantalla 6.1pulgadas y una memoria de 256gb"
+                    thumbnail: " sin imagen"
+                    price: 200
+                    stock: 9999999
+                    code: "3das"
+                  quantity: 1  
+        "404":
+          description: El carrito no ha sido encontrado.          
 components:
   schemas: 
     Cart: 
-      type: array
+      type: object
       properties: 
         _id:
-          type: string
+          type: ObjectId
           description: Id autogenerado por Mongo.
         products: 
-          type: object
-          description: productos que se encuentran en el carrito 
+          type: array
+          items: 
+            type: object
+            properties:
+              product: 
+                type: ObjectId
+                description: id del producto.
         quantity:
-          type: string
-          description: cantidad del producto en el carrito 
+          type: number
+          description: cantidad del producto seleccionado         
       example:
         _id: ObjectId('fasldkf56asdf.asdfa6a54s')
-        products: Iphone 10 y su descripcion precio codigo, etc
+        products:
+          product: ObjectId('dasassagaa525')
         quantity: '5'
   requestBodies: 
     updateCart:
       type: object
       properties: 
         _id:
-          type: string
+          type: ObjectId
           description: Id autogenerado por Mongo.
         products: 
-          type: object
-          description: productos que se encuentran en el carrito 
+          type: array
+          items: 
+            type: object
+            properties:
+              product: 
+                type: ObjectId
+                description: id del producto.
         quantity:
-          type: string
-          description: cantidad del producto en el carrito  
+          type: number
+          description: cantidad del producto seleccionado         
       example:
         _id: ObjectId('fasldkf56asdf.asdfa6a54s')
-        products: Iphone 10 y su descripcion precio codigo, etc
+        products:
+          product: ObjectId('dasassagaa525')
         quantity: '5'
