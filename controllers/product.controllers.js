@@ -18,7 +18,7 @@ class ProductController {
     }
     getProducts = async (req, res) => {
         try {
-          const { limit = 10 } = req.query;
+          const { limit = 5 } = req.query;
           const { page = 1 } = req.query;
           let products = await productModel.paginate(
             {},
@@ -27,9 +27,10 @@ class ProductController {
           const { docs, hasPrevPage, hasNextPage, prevPage, nextPage, totalPages } =
             products;
       
-          res.send({
-            status: "success",
-            products: docs,
+          res.status(200).send({
+            status: "success", payload:
+            products, 
+            docs,
             hasPrevPage,
             hasNextPage,
             prevPage,
@@ -48,7 +49,7 @@ class ProductController {
           const product = await productService.getProductById(pid);
           !product
             ?res.status(404).send({ error: 'No existe el producto' })
-            :res.send(product);
+            :res.status(200).send({status: "success",payload: product});
             
         } catch (error) {
           console.log(error);
@@ -96,8 +97,8 @@ class ProductController {
           const  prod  = req.body;
           const result = await productService.updateProduct(pid, prod);
           Object.keys(result).length === 0
-              ? res.status(400).send({ error: 'No se ha podido modificar!' })
-              : res.status(200).send({ status: `el producto se ha modificado con exito!`, payload: prod })
+              ? res.status(400).send({ status:'error', error: 'No se ha podido modificar!'  })
+              : res.status(200).send({ status: 'success', payload: prod })
         } catch (err) {
           console.log(err);
         }
@@ -107,8 +108,8 @@ class ProductController {
           const { pid } = req.params;
         const deletedProduct = await productService.deleteProduct(pid)
         Object.keys(deletedProduct).length === 0
-        ? res.status(404).send({error: `El producto no existe`})
-        : res.status(200).send({ status:`El producto se ha eliminado`, payload: deletedProduct});
+        ? res.status(404).send({status:'error', error: `El producto no existe` })
+        : res.status(200).send({status:'success', payload: deletedProduct });
         } catch (error) {
           console.log(error);
         }
