@@ -85,7 +85,7 @@ class ProductController {
           const addedProduct = await productService.createProduct(productSend);
       
           Object.keys(addedProduct).length === 0
-          ? res.status(400).send({ error: "No se pudo agregar el producto" })
+          ? res.status(400).send({status: 'error', error: "No se pudo agregar el producto" })
           : res.status(201).send({status:'producto agregado', payload: addedProduct})
         } catch (error) {
           next(error)

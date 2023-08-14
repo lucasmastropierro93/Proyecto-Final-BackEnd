@@ -44,8 +44,8 @@ router.post("/login", sessionControllers.login);
 router.post("/register", sessionControllers.register);
 
 ////////////////////////////// entrar con usuario adminCoder@code.com/////////////////////////////////////
-router.get("/current", passportCall("jwt", { session: false }), authorization("user"),(req, res) => {
-    res.send(req.user);
+router.get("/current", passportCall("jwt", { session: false }), /*authorization("user"),*/(req, res) => {
+    res.status(200).send({status: 'success', payload: req.user});
   }
 );
 router.get("/logout", sessionControllers.logout);

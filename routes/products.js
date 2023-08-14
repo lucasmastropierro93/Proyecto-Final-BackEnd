@@ -12,7 +12,7 @@ const router = Router();
 router.get("/mockingproducts", productController.generateProductsMock)
 router.get("/", productController.getProducts);
 router.get("/:pid", productController.getProductById);
-router.post("/"/*,passportCall('jwt',{session:false}),authorization(['admin','premium'])*/,productController.createProduct);
+router.post("/",passportCall('jwt',{session:false}),authorization(['admin','premium']),productController.createProduct);
 router.put("/:pid", productController.updateProduct);
 router.delete("/:pid", productController.deleteProduct);
 

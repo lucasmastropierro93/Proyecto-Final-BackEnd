@@ -76,7 +76,7 @@ class SessionController {
 
     const existUser = await userService.getUser({email});
     if (existUser) {
-      return res.send({ status: "error", message: "el email ya existe" });
+      return res.status(400).send({ status: "error", error: "el email ya existe" });
     }
 
     const newCart = { products: [] };
@@ -110,7 +110,7 @@ class SessionController {
       cart: newUser.cart,
     });
 
-    res
+    res.status(302)
       .cookie("coderCookieToken", accessToken, {
         maxAge: 60 * 60 * 100,
         httpOnly: true,
@@ -154,13 +154,13 @@ class SessionController {
     try {
         const userId = req.params.uid
         const userDB = await userService.getUserById(userId)
-        if (!userDB) return res.status(404).send({ status: "error", message: "Usuario inexistente" })
+        if (!userDB) return res.status(404).send({ status: "error", error: "Usuario inexistente" })
 
         const newRole = userDB.role === "user" ? "premium" : "user";
         userDB.role = newRole
         await userDB.save()
 
-        res.send({ status: "success", message: "Rol de usuario actualizado exitosamente", role: newRole })
+        res.status(200).send({ status: "success", message: "Rol de usuario actualizado exitosamente", role: newRole })
     } catch (error) {
         console.log("error en cambiar rol");
     }
