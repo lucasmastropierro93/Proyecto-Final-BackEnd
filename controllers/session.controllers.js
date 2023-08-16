@@ -29,6 +29,11 @@ class SessionController {
         .status(401)
         .send({ status: "error", message: "contraseña incorrecta" });
 
+
+     const currentDate = new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString()
+     await userService.updateUser(userDB._id, currentDate)
+
+
     req.session.user = {
       first_name: userDB.first_name,
       last_name: userDB.last_name,
@@ -92,7 +97,7 @@ class SessionController {
       first_name,
       last_name,
       email,
-      date_of_birth,
+      date_of_birth: new Date(date_of_birth).toLocaleDateString(),
       username,
       password: createHash(password),
       role: role,
@@ -117,15 +122,25 @@ class SessionController {
       })
       .redirect("/login");
   };
-  logout = (req, res) => {
-    req.session.destroy((err) => {
-      if (err) {
-        return res.send({ status: "error", error: err });
-      } else {
-        res.clearCookie('coderCookieToken')
-        res.redirect("/login");
+  logout = async (req, res) => {
+    try {
+      const userDB = await userService.getUser({ email: req.session.user.email})
+      if (userDB) {
+        const currentDate = new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString()
+        await userService.updateUser(userDB._id, currentDate )
       }
-    });
+      req.session.destroy((err) => {
+        if (err) {
+          return res.send({ status: "error", error: err });
+        } else {
+          res.clearCookie('coderCookieToken')
+          res.redirect("/login");
+        }
+      });
+    } catch (error) {
+      console.log("error en logout");
+    }
+   
   };
   restorePass = async (req, res) => {
     const { email, password } = req.body;
@@ -204,6 +219,13 @@ class SessionController {
         res.send({status:'success', message: 'se ha enviado el link para resetear tu pass'})
     } catch (error) {
         console.log("error en forgot");
+    }
+  }
+  uploadDocuments = async(req,res)=>{
+    try {
+      res.send("Subiendo documento")
+    } catch (error) {
+      console.log("error en uploadDocuments");
     }
   }
 }

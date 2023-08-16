@@ -22,7 +22,7 @@ const userSchema = new Schema({
     required: true,
   },
   date_of_birth: {
-    type: Date,
+    type: String,
     required: true,
   },
   username: {
@@ -37,6 +37,21 @@ const userSchema = new Schema({
   cart: {
     type: Schema.Types.ObjectId,
     ref: "carts",
+  },
+  documents: [
+    {
+      name: {
+        type: String,
+        required: true,
+      },
+      reference: {
+        type: String,
+        required: true,
+      },
+    },
+  ],
+  last_connection: {
+    type: String,
   },
 });
 

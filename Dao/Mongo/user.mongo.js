@@ -28,13 +28,7 @@ class UserManagerMongo {
         console.log("error en addUser");
     }
   }
-  async updateUser(uid, data) {
-    try {
-        return await userModel.findByIdAndUpdate(uid, data)
-    } catch (error) {
-        console.log("error en updateuser");
-    }
-  }
+
   async updateUserByEmail(email, userToReplace)  {
     try {
         return await userModel.updateOne({ email: email }, userToReplace);
@@ -47,6 +41,13 @@ class UserManagerMongo {
         return await userModel.findByIdAndDelete({_id: uid})
     } catch (error) {
         console.log("error en deletuser");
+    }
+  }
+  async updateUser(uid,currentDate){
+    try {
+      return await userModel.updateOne({_id: uid},{ $set:{last_connection: currentDate}})
+    } catch (error) {
+      console.log("error en updateuser");
     }
   }
 }

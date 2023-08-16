@@ -11,6 +11,8 @@ const sessionControllers = require("../controllers/session.controllers");
 
 const router = Router();
 
+router.post('/:uid/documents', sessionControllers.uploadDocuments)
+
 router.post('/forgotPassword', sessionControllers.forgotpassword)
 
 router.post('/resetPassword', sessionControllers.resetPassword)
