@@ -8,10 +8,22 @@ const { passportCall } = require("../config/passportCall");
 const { authorization } = require("../config/authorizationJwtRole.js");
 const userManager = require("../Dao/Mongo/user.mongo");
 const sessionControllers = require("../controllers/session.controllers");
+const { uploader } = require("../utils/multer");
+
 
 const router = Router();
 
-router.post('/:uid/documents', sessionControllers.uploadDocuments)
+router.post('/documents', uploader.array('uploads'), async(req, res)=>{
+  try {
+      res.status(200).send({
+          status: 'success',
+          message: 'se subió correctamente'
+      })
+  } catch (error) {
+      console.log("error en subir document  ")
+  }
+
+})
 
 router.post('/forgotPassword', sessionControllers.forgotpassword)
 

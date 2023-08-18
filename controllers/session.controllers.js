@@ -221,13 +221,7 @@ class SessionController {
         console.log("error en forgot");
     }
   }
-  uploadDocuments = async(req,res)=>{
-    try {
-      res.send("Subiendo documento")
-    } catch (error) {
-      console.log("error en uploadDocuments");
-    }
-  }
+ 
 }
 
 module.exports = new SessionController();

@@ -209,4 +209,4 @@ app.use('/docs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs))
 app.use(addLogger)
   
 app.use(routerIndex)
-app.use(errorHandler)
+/*app.use(errorHandler)*/

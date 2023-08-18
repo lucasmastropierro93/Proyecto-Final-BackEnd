@@ -98,4 +98,7 @@ router.get('/resetPassword',async (req,res)=>{
 
 
 })
+router.get('/api/session/documents', (req,res) =>{
+  res.render('uploadDocuments',{})
+})
 module.exports = router

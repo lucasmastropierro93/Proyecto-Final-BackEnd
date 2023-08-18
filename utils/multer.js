@@ -2,10 +2,23 @@ const multer = require('multer')
 
 const storage = multer.diskStorage({
     destination: function(req, file, cb){
-        cb(null, `${__dirname}/public/documents`)
+        let uploadFolder = '';
+
+        if (file.fieldname === 'uploads') {
+            let uploadType = req.body.uploadType
+            if(uploadType === 'profile'){
+                uploadFolder = 'profiles'
+            }
+            else if (uploadType === 'product') {
+                uploadFolder = 'products'
+            }
+            else if (uploadType === 'document') {
+                uploadFolder = 'documents'
+            }
+        }
+        cb(null, `${__dirname}/../public/${uploadFolder}`)
     },
     filename: function(req, file, cb){
-        console.log('file: ', file)
         cb(null, `${Date.now()}-${file.originalname}`)
     } 
 })
