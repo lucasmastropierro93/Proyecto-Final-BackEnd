@@ -13,6 +13,11 @@ const { uploader } = require("../utils/multer");
 
 const router = Router();
 
+
+router.get('/users', sessionControllers.getAllUsers)
+
+router.get('/deleteUsers', sessionControllers.deleteUsers)
+
 router.post('/documents', uploader.array('uploads'), async(req, res)=>{
   try {
       res.status(200).send({
