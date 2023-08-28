@@ -37,3 +37,14 @@ exports.sendResetPassMail = async (user,resetLink)=>{
         </div>`
     })
 }
+exports.sendMailDeletedUser = async (user)=>{
+    return await transport.sendMail({
+        from: 'USUARIO ELMINADO POR INACTIVIDAD <lucasmastro93@gmail.com>',
+        to: user.email ,
+        subject:'usuario eliminado por inactividad',
+        html:`<div>
+        <h1>Tu usuario ha sido eliminado debido al periodo de inactividad!</h1>
+        <p>Le comunicamos al usuario  ${user.first_name} que su cuenta ha sido eliminada debido al periodo de inactividad</p>
+        </div>`
+    })
+}

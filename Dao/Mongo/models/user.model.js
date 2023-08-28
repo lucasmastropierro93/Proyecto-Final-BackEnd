@@ -48,10 +48,11 @@ const userSchema = new Schema({
         type: String,
         required: true,
       },
+      _id: false
     },
   ],
   last_connection: {
-    type: String,
+    type: Date,
   },
 });
 

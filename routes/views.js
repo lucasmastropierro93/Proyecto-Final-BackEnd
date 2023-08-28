@@ -8,7 +8,7 @@ const productModel = require("../Dao/Mongo/models/product.model")
 const userList = require("../Dao/Mongo/user.mongo")
 const { userModel } = require('../Dao/Mongo/models/user.model')
 const passport = require("passport");
-const { productService, cartService } = require('../service/service')
+const { productService, cartService, userService } = require('../service/service')
 const { verifyResetToken } = require('../utils/jwt')
 
 
@@ -100,5 +100,21 @@ router.get('/resetPassword',async (req,res)=>{
 })
 router.get('/api/session/documents', (req,res) =>{
   res.render('uploadDocuments',{})
+})
+router.get('/api/session/controlusers', async (req,res)=>{
+  try {
+    let user = req.session.user
+    const allUsers = await userService.getAllUsers()
+    
+    const object = {
+      title: "Lista de Usuarios",
+      allUsers: allUsers,
+      user
+  };
+    res.render('users',object)
+  } catch (error) {
+    console.log("error en view control user");
+  }
+  
 })
 module.exports = router

@@ -42,7 +42,7 @@ class UserManagerMongo {
 };
   async deleteUser(uid) {
     try {
-        return await this.userModel.findByIdAndDelete({_id: uid})
+        return await this.userModel.deleteOne({_id: uid})
     } catch (error) {
         console.log("error en deletuser");
     }

@@ -8,7 +8,10 @@ const {
 const { createHash, isValidPassword } = require("../utils/bcryptHash");
 
 const { userService, cartService } = require("../service/service");
-const { sendResetPassMail } = require("../utils/nodemailer");
+const {
+  sendResetPassMail,
+  sendMailDeletedUser,
+} = require("../utils/nodemailer");
 const { UserDto } = require("../dto/user.dto");
 
 class SessionController {
@@ -34,9 +37,8 @@ class SessionController {
         .status(401)
         .send({ status: "error", message: "contraseña incorrecta" });
 
-    const currentDate =
-      new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString();
-    await userService.updateUser(userDB._id, currentDate);
+    const currentDate = new Date();
+    await userService.updateUser(userDB._id, { last_connection: currentDate });
 
     req.session.user = {
       first_name: userDB.first_name,
@@ -135,11 +137,10 @@ class SessionController {
         email: req.session.user.email,
       });
       if (userDB) {
-        const currentDate =
-          new Date().toLocaleDateString() +
-          " " +
-          new Date().toLocaleTimeString();
-        await userService.updateUser(userDB._id, currentDate);
+        const currentDate = new Date();
+        await userService.updateUser(userDB._id, {
+          last_connection: currentDate,
+        });
       }
       req.session.destroy((err) => {
         if (err) {
@@ -189,13 +190,11 @@ class SessionController {
       userDB.role = newRole;
       await userDB.save();
 
-      res
-        .status(200)
-        .send({
-          status: "success",
-          message: "Rol de usuario actualizado exitosamente",
-          role: newRole,
-        });
+      res.status(200).send({
+        status: "success",
+        message: "Rol de usuario actualizado exitosamente",
+        role: newRole,
+      });
     } catch (error) {
       console.log("error en cambiar rol");
     }
@@ -206,13 +205,11 @@ class SessionController {
       const { token } = req.query;
       const verifiedToken = verifyResetToken(token);
       if (!verifiedToken) {
-        return res
-          .status(400)
-          .send({
-            status: "error",
-            message:
-              "El enlace de recuperación de contraseña es inválido o ha expirado",
-          });
+        return res.status(400).send({
+          status: "error",
+          message:
+            "El enlace de recuperación de contraseña es inválido o ha expirado",
+        });
       }
 
       const userDB = await userService.getUser({
@@ -224,12 +221,10 @@ class SessionController {
           .send({ status: "error", message: "Usuario inexistente" });
 
       if (isValidPassword(password, userDB)) {
-        return res
-          .status(400)
-          .send({
-            status: "error",
-            message: "La contraseña debe ser distinta a la anterior",
-          });
+        return res.status(400).send({
+          status: "error",
+          message: "La contraseña debe ser distinta a la anterior",
+        });
       }
 
       userDB.password = createHash(password);
@@ -287,19 +282,53 @@ class SessionController {
       console.log("error en get de users");
     }
   };
-    deleteUsers = async (req, res) => {
+  deleteUsers = async (req, res) => {
     try {
+      const currentDate = new Date();
+      const twoDaysAgo = new Date(
+        currentDate - 24 * 60 * 60 * 1000 
+      );
+
       const allUsers = await userService.getAllUsers();
-      if (!allUsers || allUsers.length === 0) {
+
+      const inactiveUsers = allUsers.filter((user) => {
+        const lastConnectionDate = user.last_connection
+        return lastConnectionDate <= twoDaysAgo;
+      });
+      if (inactiveUsers.length === 0) {
         return res
-          .status(500)
-          .send({ status: "error", error: "no hay usuarios" });
+          .status(200)
+          .send({
+            status: "success",
+            message: "No hay usuarios inactivos para eliminar",
+          });
       }
 
-      const response = allUsers.map((user) => new UserDto(user));
-      res.status(200).send({ status: "success", payload: response });
+      for (const user of inactiveUsers) {
+      
+        await sendMailDeletedUser(user);
+        await userService.deleteUser(user._id);
+      }
+
+      res
+        .status(200)
+        .send({
+          status: "success",
+          message: "Usuarios inactivos eliminados exitosamente",
+        });
     } catch (error) {
       console.log("error en delete user");
+    }
+  };
+  deleteUser = async (req, res) => {
+    try {
+      const uid = req.params.uid;
+      await userService.deleteUser(uid);
+      res
+        .status(200)
+        .send({ status: "success", message: "Usuario eliminado exitosamente" });
+    } catch (error) {
+      console.log(error);
     }
   };
 }
