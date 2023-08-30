@@ -10,6 +10,8 @@ const { userModel } = require('../Dao/Mongo/models/user.model')
 const passport = require("passport");
 const { productService, cartService, userService } = require('../service/service')
 const { verifyResetToken } = require('../utils/jwt')
+const { passportCall } = require('../config/passportCall')
+const { authorization } = require('../config/authorizationJwtRole')
 
 
 router.get('/', async(req, res) =>{
@@ -101,7 +103,7 @@ router.get('/resetPassword',async (req,res)=>{
 router.get('/api/session/documents', (req,res) =>{
   res.render('uploadDocuments',{})
 })
-router.get('/api/session/controlusers', async (req,res)=>{
+router.get('/api/session/controlusers', passportCall('jwt',{session:false}),authorization(['admin','premium']),async (req,res)=>{
   try {
     let user = req.session.user
     const allUsers = await userService.getAllUsers()
