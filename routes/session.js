@@ -17,7 +17,7 @@ const router = Router();
 
 router.get('/users', sessionControllers.getAllUsers)
 
-router.post('/deleteUsers', sessionControllers.deleteUsers)
+router.delete('/deleteUsers', sessionControllers.deleteUsers)
 
 router.delete('/:uid/deleteUser', sessionControllers.deleteUser)
 

@@ -42,14 +42,14 @@ class UserManagerMongo {
 };
   async deleteUser(uid) {
     try {
-        return await this.userModel.deleteOne({_id: uid})
+        return await this.userModel.findByIdAndDelete({_id: uid})
     } catch (error) {
         console.log("error en deletuser");
     }
   }
-  async updateUser(uid,currentDate){
+  async updateUser(uid, updateData){
     try {
-      return await this.userModel.updateOne({_id: uid},{ $set:{last_connection: currentDate}})
+      return await this.userModel.updateOne({_id: uid},{ $set: updateData})
     } catch (error) {
       console.log("error en updateuser");
     }

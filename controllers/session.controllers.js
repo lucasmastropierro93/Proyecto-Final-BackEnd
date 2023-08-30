@@ -285,16 +285,17 @@ class SessionController {
   deleteUsers = async (req, res) => {
     try {
       const currentDate = new Date();
-      const twoDaysAgo = new Date(
-        currentDate - 24 * 60 * 60 * 1000 
-      );
+
+      const twoDaysAgo = new Date(currentDate - 2 * 24 * 60 * 60 * 1000);
 
       const allUsers = await userService.getAllUsers();
 
       const inactiveUsers = allUsers.filter((user) => {
-        const lastConnectionDate = user.last_connection
+        const lastConnectionDate = new Date(user.last_connection);
+        console.log(lastConnectionDate);
         return lastConnectionDate <= twoDaysAgo;
       });
+
       if (inactiveUsers.length === 0) {
         return res
           .status(200)
@@ -303,13 +304,10 @@ class SessionController {
             message: "No hay usuarios inactivos para eliminar",
           });
       }
-
       for (const user of inactiveUsers) {
-      
         await sendMailDeletedUser(user);
         await userService.deleteUser(user._id);
       }
-
       res
         .status(200)
         .send({
