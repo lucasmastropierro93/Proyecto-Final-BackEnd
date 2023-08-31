@@ -91,7 +91,7 @@ addForm.addEventListener('submit', evt => {
         title: title.value,
         description: description.value,
         price: parseInt(price.value),
-        code:  parseInt(code.value),
+        code:  code.value,
         stock: parseInt(stock.value),
         category: category.value,
         thumbnail: [thumbnail.value]

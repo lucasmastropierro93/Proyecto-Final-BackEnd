@@ -2,7 +2,8 @@ const { Session } = require("express-session");
 const { productModel } = require("../Dao/Mongo/models/product.model");
 const { productService } = require("../service/service");
 const { generateProducts } = require("../utils/generateProducts");
-
+const { sendMailDeletedProduct } = require("../utils/nodemailer");
+const { ProductDto } = require("../dto/product.dto");
 class ProductController {
     generateProductsMock = async (req,res) => {
       try {
@@ -60,7 +61,8 @@ class ProductController {
         try {
           const {title, description, price, code, stock, category, thumbnail} = req.body
 
-          const user = req.session.user
+          const user = req.user
+          console.log(user);
           if(!title || !description || !price || !code || !stock || !category){
             CustomError.createError({
                 name: 'Product creation error',
@@ -81,12 +83,11 @@ class ProductController {
         if(user && user.role === 'premium'){
             owner = user.email
         }
-          let productSend = ({title, description, price, code, stock, category, thumbnail, owner}) 
-          const addedProduct = await productService.createProduct(productSend);
-      
-          Object.keys(addedProduct).length === 0
-          ? res.status(400).send({status: 'error', error: "No se pudo agregar el producto" })
-          : res.status(201).send({status:'producto agregado', payload: addedProduct})
+        let newProduct = new ProductDto({title, description, price, code, stock, category, thumbnail, owner}) 
+        let product = await productService.createProduct(newProduct)
+        !product
+        ? res.status(400).send({status:'error', error: "No se pudo crear el producto" })
+        : res.status(201).send({status:'success', payload: product})
         } catch (error) {
           next(error)
         }
@@ -105,11 +106,22 @@ class ProductController {
       }
       deleteProduct = async (req, res) => {
         try {
-          const { pid } = req.params;
-        const deletedProduct = await productService.deleteProduct(pid)
-        Object.keys(deletedProduct).length === 0
-        ? res.status(404).send({status:'error', error: `El producto no existe` })
-        : res.status(200).send({status:'success', payload: deletedProduct });
+          const { pid } = req.params
+          const user = req.user
+
+            const product = await productService.getProductById(pid)
+            if (!product) return res.status(404).send({status:'error', error: `El producto con ID ${pid} no existe` })
+            
+            if(user && (user.role === 'admin' || (user.role === 'premium' && product.owner === user.email))){
+                if(product.owner !== 'admin'){
+                    await sendMailDeletedProduct(product)
+                }
+                const deletedProduct = await productService.deleteProduct(pid)
+                if (deletedProduct) {
+                    return res.status(200).send({ status:'success', payload: product });
+                }
+            }
+            return res.status(401).send({status:'error', error: "No tienes permiso para eliminar este producto" })
         } catch (error) {
           console.log(error);
         }

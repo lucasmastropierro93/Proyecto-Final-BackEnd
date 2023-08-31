@@ -292,7 +292,7 @@ class SessionController {
 
       const inactiveUsers = allUsers.filter((user) => {
         const lastConnectionDate = new Date(user.last_connection);
-        console.log(lastConnectionDate);
+        
         return lastConnectionDate <= twoDaysAgo;
       });
 

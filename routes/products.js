@@ -14,6 +14,6 @@ router.get("/", productController.getProducts);
 router.get("/:pid", productController.getProductById);
 router.post("/",passportCall('jwt',{session:false}),authorization(['admin','premium']),productController.createProduct);
 router.put("/:pid", productController.updateProduct);
-router.delete("/:pid", productController.deleteProduct);
+router.delete("/:pid", passportCall('jwt',{session:false}),authorization(['admin','premium']),productController.deleteProduct);
 
 module.exports = router;
