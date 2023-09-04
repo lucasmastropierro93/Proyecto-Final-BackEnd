@@ -126,10 +126,7 @@ class CartController {
     try {
             const { cid } = req.params
             const cart = await cartService.getCartById(cid)
-            const token = req.cookies.coderCookieToken
-            let tokenUser = jwt.verify(token, objectConfig.jwt_secret_key)
-            console.log(token);
-            console.log(tokenUser);
+           
             let productsUnavailable = []
             console.log(cart);
             
@@ -156,7 +153,7 @@ class CartController {
                 code: uuidv4(),
                 purchase_datetime: new Date(),
                 amount: productsAvaible.reduce((total, item) => total + item.quantity * item.product.price, 0),
-                purchaser: tokenUser.email,
+                purchaser: req.session.user.email,
               }
               const createdTicket = await cartService.generateTicket(ticket)
               console.log(createdTicket);

@@ -30,9 +30,19 @@
             {{/each}}
           </tbody>
         </table>
+        <div class="d-flex justify-content-center p-3">
+          <button class="btn btn-success p-3" onclick="generateTicket('{{user.cart}}')">Finalizar compra</button>
+          
+        </div>
+         <div class="d-flex justify-content-center p-3">
+          
+          <button class="btn btn-success p-3" onclick="cleanCart('{{user.cart}}')">Vaciar carrito</button>
+        </div>
         {{else}}
         <h3>El carrito esta vacio!</h3>
         {{/if}}
     </div>
 
 </div>
+<script src="/static/js/cart.js"></script>
+<script src="/static/js/cleanCart.js"></script>

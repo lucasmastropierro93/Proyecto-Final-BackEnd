@@ -52,6 +52,8 @@ router.get('/realtimeproducts', async(req, res) =>{
 router.get('/carts/:cid', async(req,res)=>{
 
   try{
+
+      let user = req.session.user
       const {cid} = req.params
       const cart = await cartService.getCartById(cid)
       if(!cart){
@@ -60,7 +62,8 @@ router.get('/carts/:cid', async(req,res)=>{
           let products= cart.products
           res.status(201).render('cart', {
               products,
-              id: cart._id
+              id: cart._id,
+              user
           })
       }
       
