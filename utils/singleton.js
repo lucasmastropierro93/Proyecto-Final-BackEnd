@@ -1,10 +1,12 @@
 const mongoose = require('mongoose')
 const dotenv = require('dotenv');
+
+dotenv.config()
 class MongoSingleton {
     static #instance 
     constructor(){
         
-        mongoose.connect("mongodb+srv://lucasmastro93:CiIL09iL8xgzBdje@cluster0.dgibp03.mongodb.net/Ecommerce?retryWrites=true&w=majority", {
+        mongoose.connect(process.env.MONGO_URL, {
             useNewUrlParser: true,
             useUnifiedTopology: true
         })

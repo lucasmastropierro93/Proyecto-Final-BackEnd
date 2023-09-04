@@ -16,7 +16,7 @@ const swaggerUiExpress = require('swagger-ui-express')
 const logger = require("morgan")
 const app = express();
 const ProductManager = require("./Dao/FileSystem/ProductDaoFile");
-const PORT = process.env.PORT
+const PORT = process.env.PORT || 8080;
 const chatmanager = require("./Dao/Mongo/chat.mongo")
 const ObjectId = mongoose.Types.ObjectId
 
@@ -85,7 +85,7 @@ app.use(session({
 /* CON MONGO*/
 app.use(session({
   store: create({
-    mongoUrl: "mongodb+srv://lucasmastro93:CiIL09iL8xgzBdje@cluster0.dgibp03.mongodb.net/Ecommerce?retryWrites=true&w=majority",
+    mongoUrl: process.env.MONGO_URL,
     mongoOptions: {
       useNewUrlParser: true,
       useUnifiedTopology: true

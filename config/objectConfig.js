@@ -11,12 +11,11 @@ dotenv.config({
 })
 
 
-let url =
-  "mongodb+srv://lucasmastro93:CiIL09iL8xgzBdje@cluster0.dgibp03.mongodb.net/Ecommerce?retryWrites=true&w=majority";
+
 
 module.exports = {
   mode,
-  jwt_secret_key: 'palabrasecreta',
+  jwt_secret_key: process.env.JWT_SECRET_KEY,
   gmail_user_app: process.env.GMAIL_USER,
   gmail_pass_app: process.env.GMAIL_PASS,
   port: process.env.PORT,
