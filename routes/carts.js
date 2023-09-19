@@ -13,7 +13,7 @@ routerCarts.get('/:cid', cartControllers.getCartById)
 
 routerCarts.post('/', cartControllers.createCart)
 
-routerCarts.post('/:cid/product/:pid', cartControllers.addToCart)
+routerCarts.post('/:cid/product/:pid', passportCall('jwt',{session: false}),authorization(['admin','premium','user']), cartControllers.addToCart)
 
 routerCarts.post('/:cid/purchase', passportCall('jwt',{session: false}),authorization(['admin','premium','user']),cartControllers.generateTicket)
 
