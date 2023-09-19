@@ -2,6 +2,10 @@ const { chatModel } = require("./models/chat.model");
 
 
 class ChatManagerMongo{
+    constructor () {
+        this.chatModel = chatModel
+    }
+    
     async saveMessages(data){
         try{
             return await chatModel.create(data)
@@ -19,4 +23,4 @@ class ChatManagerMongo{
     }
 }
 
-module.exports = new ChatManagerMongo ;
+module.exports =  ChatManagerMongo ;
